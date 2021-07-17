@@ -1,7 +1,6 @@
 import { Button, ButtonProps } from "@chakra-ui/react"
-import { Routes, useMutation, useRouter } from "blitz"
-import createGame from "../../mutations/createGame"
 import { useFormContext } from "react-hook-form"
+import { useState } from "react"
 
 export interface CreateGameButtonProps
   extends Omit<ButtonProps, "onClick" | "isLoading" | "loadingText"> {
@@ -9,27 +8,21 @@ export interface CreateGameButtonProps
 }
 
 export const CreateGameButton = ({ isPublic, children, ...props }: CreateGameButtonProps) => {
-  const { handleSubmit } = useFormContext()
-  const router = useRouter()
-  const [createGameMutation, { isLoading }] = useMutation(createGame)
+  const {
+    setValue,
+    formState: { isSubmitting },
+  } = useFormContext()
+  const [privateValue] = useState<string>("")
 
   return (
     <Button
       type="submit"
-      onClick={handleSubmit(
-        async (values) => {
-          const { id: gameId } = await createGameMutation({
-            private: isPublic,
-            player: {
-              name: values.name,
-            },
-          })
-          await router.replace(Routes.ShowGamePage({ gameId }))
-        },
-        (errors) => console.error(errors)
-      )}
-      isLoading={isLoading}
-      loadingText={"Creating..."}
+      rounded={"full"}
+      isLoading={isSubmitting && privateValue === "true"}
+      loadingText="Submitting"
+      onClick={() => {
+        setValue("private", isPublic)
+      }}
       {...props}
     >
       {children}

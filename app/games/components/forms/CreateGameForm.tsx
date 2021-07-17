@@ -6,7 +6,7 @@ import { Center, VStack } from "@chakra-ui/react"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
-export function PlayerForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function CreateGameForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
       <LabeledTextField
@@ -15,6 +15,7 @@ export function PlayerForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
         label={"Username"}
         placeholder={"Some Wacky Username"}
       />
+      <LabeledTextField label={""} name={"private"} hidden />
       <Center pt="32px">
         <VStack>
           <CreateGameButton disabled isPublic>

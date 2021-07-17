@@ -5,25 +5,35 @@ import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import getGame from "../../games/queries/getGame"
 import Lobby from "../../games/components/Lobby"
 import { Game } from "../../games/components/Game"
+import { globalState, GlobalStateType } from "../../auth/state"
+import { useState } from "@hookstate/core"
+import { JoinGameModal } from "../../games/components/JoinGameModal"
 
 export const GameLoader = () => {
-  const router = useRouter()
+  const state = useState<GlobalStateType>(globalState)
   const gameId = useParam("gameId", "string")
-  const [game] = useQuery(getGame, { id: gameId })
+  const [game, { refetch }] = useQuery(getGame, { id: gameId })
 
   useEffect(() => {}, [game.started, game.finished])
 
-  router.beforePopState((state) => {
-    console.log(state)
-    return true
-  })
-
-  if (game.started && !game.finished) {
-    return <Game game={game} />
-  } else if (!game.started && !game.finished) {
-    return <Lobby game={game} />
+  if (state.value?.gameId) {
+    if (game.started && !game.finished) {
+      return <Game />
+    } else if (!game.started && !game.finished) {
+      return <Lobby />
+    } else {
+      return <></>
+    }
   } else {
-    return <></>
+    if (!game.started && !game.finished) {
+      return (
+        <>
+          <JoinGameModal />
+        </>
+      )
+    } else {
+      return <></>
+    }
   }
 }
 

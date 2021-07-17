@@ -16,7 +16,6 @@ interface NumberFieldProps
 
 export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
   ({ onChange, ...props }, ref) => {
-    console.log(onChange)
     useEffect(() => {}, [])
 
     return (

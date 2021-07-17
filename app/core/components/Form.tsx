@@ -18,6 +18,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
 
 interface OnSubmitResult {
   FORM_ERROR?: string
+
   [prop: string]: any
 }
 
@@ -47,19 +48,22 @@ export function Form<S extends z.ZodType<any, any>>({
   return (
     <FormProvider {...ctx}>
       <form
-        onSubmit={ctx.handleSubmit(async (values) => {
-          const result = (await onSubmit(values)) || {}
-          for (const [key, value] of Object.entries(result)) {
-            if (key === FORM_ERROR) {
-              setFormError(value)
-            } else {
-              ctx.setError(key as any, {
-                type: "submit",
-                message: value,
-              })
+        onSubmit={ctx.handleSubmit(
+          async (values) => {
+            const result = (await onSubmit(values)) || {}
+            for (const [key, value] of Object.entries(result)) {
+              if (key === FORM_ERROR) {
+                setFormError(value)
+              } else {
+                ctx.setError(key as any, {
+                  type: "submit",
+                  message: value,
+                })
+              }
             }
-          }
-        })}
+          },
+          (errors) => console.error(errors)
+        )}
         className="form"
         {...props}
       >

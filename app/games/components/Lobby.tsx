@@ -6,7 +6,6 @@ import {
   GridItem,
   Heading,
   Input,
-  Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
@@ -19,19 +18,22 @@ import {
 } from "@chakra-ui/react"
 import { Card } from "../../core/components/Card"
 import { LobbyPlayerList } from "./LobbyPlayerList"
-import { Routes, useMutation, useRouter } from "blitz"
-import { Game as ShiritoriGame, Player } from "db"
+import { Routes, useMutation, useParam, useQuery, useRouter } from "blitz"
 import { CountDown } from "./CountDown"
 import { FORM_ERROR, GameForm } from "./forms/GameForm"
 import updateGame from "../mutations/updateGame"
 import { UpdateGame } from "../validations"
 import { useState } from "react"
 import { useChannel, useEvent, useTrigger } from "@harelpls/use-pusher"
+import { UnCloseableModal } from "../../core/components/UnCloseableModal"
+import getGame from "../queries/getGame"
 
-const Lobby = ({ game }: { game: ShiritoriGame & { players: Player[] } }) => {
+const Lobby = () => {
+  const gameId = useParam("gameId", "string")
+  const [game, { refetch }] = useQuery(getGame, { id: gameId })
   const [gameData, setGameData] = useState<any>(undefined)
-  const channel = useChannel(game.id)
-  const trigger = useTrigger(game.id)
+  const channel = useChannel(gameId)
+  const trigger = useTrigger(gameId!)
   const color = useColorModeValue("gray.700", "white")
   const [updateGameMutation] = useMutation(updateGame)
   const router = useRouter()
@@ -40,6 +42,10 @@ const Lobby = ({ game }: { game: ShiritoriGame & { players: Player[] } }) => {
 
   useEvent(channel, "game-started", async (data) => {
     onOpen()
+  })
+
+  useEvent(channel, "player-created", async (data) => {
+    await refetch()
   })
 
   const startGame = async () => {
@@ -108,16 +114,7 @@ const Lobby = ({ game }: { game: ShiritoriGame & { players: Player[] } }) => {
         </Card>
       </Box>
 
-      <Modal
-        onClose={onClose}
-        size="md"
-        isOpen={isOpen}
-        isCentered
-        autoFocus
-        blockScrollOnMount
-        closeOnEsc={false}
-        closeOnOverlayClick={false}
-      >
+      <UnCloseableModal onClose={onClose} isOpen={isOpen}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
@@ -134,7 +131,7 @@ const Lobby = ({ game }: { game: ShiritoriGame & { players: Player[] } }) => {
             </Center>
           </ModalBody>
         </ModalContent>
-      </Modal>
+      </UnCloseableModal>
     </>
   )
 }

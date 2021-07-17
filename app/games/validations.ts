@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { playerName } from "../players/validations"
 
 export const GetGame = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -29,9 +30,6 @@ export const UpdateGame = z.object({
   index: z.number().optional(),
 })
 
-export const CreateGame = z.object({
+export const CreateGame = playerName.extend({
   private: z.boolean().default(false),
-  player: z.object({
-    name: z.string().nonempty(),
-  }),
 })
