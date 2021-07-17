@@ -18,53 +18,50 @@ import {
 } from "@chakra-ui/react"
 import { Card } from "../../core/components/Card"
 import { LobbyPlayerList } from "./LobbyPlayerList"
-import { Routes, useMutation, useParam, useQuery, useRouter, useSession } from "blitz"
+import { useMutation, useParam, useSession } from "blitz"
 import { CountDown } from "./CountDown"
 import { FORM_ERROR, GameSettingsForm } from "./forms/GameSettingsForm"
 import updateGame from "../mutations/updateGame"
-import { UpdateGame } from "../validations"
+import { UpdateGameSettings } from "../validations"
 import { Suspense, useState } from "react"
 import { useChannel, useEvent, useTrigger } from "@harelpls/use-pusher"
 import { UnCloseableModal } from "../../core/components/UnCloseableModal"
-import getGame from "../queries/getGame"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import { Role } from "../../../types"
+import { useErrorToast } from "../../core/hooks/useErrorToast"
 
-const Lobby = () => {
+const Lobby = ({ refetch, game }) => {
   const gameId = useParam("gameId", "string")
-  const [game, { refetch }] = useQuery(getGame, { id: gameId })
-  const [gameData, setGameData] = useState<any>(undefined)
+  const [gameSettings, setGameSettings] = useState<any>(undefined)
   const channel = useChannel(gameId)
   const trigger = useTrigger(gameId!)
   const color = useColorModeValue("gray.700", "white")
   const [updateGameMutation] = useMutation(updateGame)
-  const router = useRouter()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { value, hasCopied, onCopy } = useClipboard(window.location.href)
   const session = useSession()
   const isHost = (session.role as Role) === "HOST"
+  const errorToast = useErrorToast()
 
-  useEvent(channel, "game-started", async (data) => {
+  useEvent(channel, "game-countdown-started", async (data) => {
     onOpen()
   })
 
-  useEvent(channel, "player-created", async (data) => {
-    await refetch()
-  })
-
-  useEvent(channel, "player-deleted", async ({ id }) => {
-    await refetch()
+  useEvent(channel, "game-started", async (data) => {
+    try {
+      await refetch()
+    } catch (error) {
+      errorToast({ message: error.toString() })
+    }
   })
 
   const startGame = async () => {
     try {
-      const game = await updateGameMutation(gameData)
-      await router.push(Routes.ShowGamePage({ gameId: game.id }))
+      await updateGameMutation({ id: gameId, started: true, ...gameSettings })
+      await trigger("game-started", {})
     } catch (error) {
       console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
-      }
+      errorToast({ message: error.toString() })
     }
   }
 
@@ -80,7 +77,7 @@ const Lobby = () => {
               <Divider />
               <Box pt={15}>
                 <GameSettingsForm
-                  schema={UpdateGame}
+                  schema={UpdateGameSettings}
                   submitText="Start Game"
                   submitButtonProps={{
                     disabled: !isHost,
@@ -88,8 +85,22 @@ const Lobby = () => {
                   initialValues={{ timer: 15 }}
                   onSubmit={async (values) => {
                     if (isHost) {
-                      setGameData(values)
-                      await trigger("game-started", { id: game.id })
+                      try {
+                        await refetch()
+                        if (game!._count!.players > 1) {
+                          setGameSettings(values)
+                          await trigger("game-countdown-started", { id: gameId })
+                        } else {
+                          errorToast({ message: "Cannot start a game with less than 2 players" })
+                          return {
+                            [FORM_ERROR]: "",
+                          }
+                        }
+                      } catch (error) {
+                        return {
+                          [FORM_ERROR]: error.toString(),
+                        }
+                      }
                     }
                   }}
                 />
@@ -103,7 +114,7 @@ const Lobby = () => {
               </Heading>
               <Divider />
               <Suspense fallback={<LoadingSpinner />}>
-                <LobbyPlayerList gameId={game.id} />
+                <LobbyPlayerList gameId={gameId!} />
               </Suspense>
             </Card>
           </GridItem>
@@ -140,7 +151,11 @@ const Lobby = () => {
               <CountDown
                 duration={5}
                 onComplete={(totalElapsedTime) => {
-                  onClose()
+                  if (isHost) {
+                    startGame().then(() => onClose())
+                  } else {
+                    onClose()
+                  }
                 }}
               />
             </Center>

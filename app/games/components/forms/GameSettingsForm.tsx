@@ -20,7 +20,6 @@ export function GameSettingsForm<S extends z.ZodType<any, any>>(props: FormProps
         name="timer"
         label="Amount of time per turn (in seconds)"
       />
-      <LabeledTextField isDisabled={!isHost} label={""} name={"id"} hidden />
     </Form>
   )
 }

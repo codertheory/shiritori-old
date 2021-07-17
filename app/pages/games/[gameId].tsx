@@ -12,7 +12,13 @@ import { useBeforeunload } from "react-beforeunload"
 export const GameLoader = () => {
   const session = useSession()
   const gameId = useParam("gameId", "string")
-  const [game] = useQuery(getGame, { id: gameId })
+  const [game, { refetch }] = useQuery(
+    getGame,
+    { id: gameId },
+    {
+      refetchOnWindowFocus: false,
+    }
+  )
   const antiCSRFToken = getAntiCSRFToken()
 
   useBeforeunload((event) => {
@@ -34,7 +40,7 @@ export const GameLoader = () => {
     if (game.started && !game.finished) {
       return <Game />
     } else if (!game.started && !game.finished) {
-      return <Lobby />
+      return <Lobby game={game} refetch={refetch} />
     } else {
       return <></>
     }

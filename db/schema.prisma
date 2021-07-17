@@ -42,31 +42,30 @@ model Session {
 }
 
 model Game {
-  id              String   @id @default(cuid())
-  private         Boolean  @default(false)
-  started         Boolean  @default(false)
-  finished        Boolean  @default(false)
-  timer           Int      @default(15)
-  currentPlayer   Player?  @relation("currentPlayer", fields: [currentPlayerId], references: [id], onDelete: Cascade)
-  currentPlayerId String?
-  lastWord        String?
-  winner          Player?  @relation("winner", fields: [winnerId], references: [id], onDelete: Cascade)
-  winnerId        String?
-  index           Int      @default(0)
-  updatedAt       DateTime @updatedAt
-  players         Player[]
-  words           Word[]
+  id        String   @id @default(cuid())
+  private   Boolean  @default(false)
+  started   Boolean  @default(false)
+  finished  Boolean  @default(false)
+  timer     Int      @default(15)
+  lastWord  String?
+  winner    Player?  @relation("winner", fields: [winnerId], references: [id], onDelete: Cascade)
+  winnerId  String?
+  index     Int      @default(0)
+  updatedAt DateTime @updatedAt
+  players   Player[]
+  words     Word[]
 }
 
 model Player {
-  id            String @id @default(cuid())
-  name          String
-  score         Int    @default(100)
-  game          Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  gameId        String
-  words         Word[]
-  winner        Game?  @relation("winner")
-  currentPlayer Game?  @relation("currentPlayer")
+  id       String  @id @default(cuid())
+  name     String
+  score    Int     @default(100)
+  game     Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId   String
+  lastWord String?
+  active   Boolean @default(false)
+  winner   Game?   @relation("winner")
+  words    Word[]
 }
 
 model Word {

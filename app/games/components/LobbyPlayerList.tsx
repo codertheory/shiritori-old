@@ -2,9 +2,19 @@ import { Wrap, WrapItem } from "@chakra-ui/react"
 import PlayerLobbyCard from "../../players/components/PlayerLobbyCard"
 import { useQuery } from "blitz"
 import getGamePlayers from "../queries/getGamePlayers"
+import { useChannel, useEvent } from "@harelpls/use-pusher"
 
 export const LobbyPlayerList = ({ gameId }: { gameId: string }) => {
-  const [players] = useQuery(getGamePlayers, { id: gameId })
+  const channel = useChannel(gameId)
+  const [players, { refetch }] = useQuery(getGamePlayers, { id: gameId })
+
+  useEvent(channel, "player-created", async (data) => {
+    await refetch()
+  })
+
+  useEvent(channel, "player-deleted", async ({ id }) => {
+    await refetch()
+  })
 
   return (
     <Wrap spacing="30px">

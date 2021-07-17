@@ -12,6 +12,9 @@ export const GamesList = () => {
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
+    where: {
+      private: false,
+    },
   })
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })

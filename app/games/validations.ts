@@ -13,12 +13,17 @@ export const DeleteGame = z.object({
 const minTimer = 10
 const maxTimer = 60
 
-export const UpdateGame = z.object({
+export const UpdateGameSettings = z.object({
+  timer: z
+    .number()
+    .min(minTimer, "Timer must be greater than 10")
+    .max(maxTimer, "Timer must be less than 60"),
+})
+
+export const UpdateGame = UpdateGameSettings.extend({
   id: z.string(),
   started: z.boolean().optional(),
   finished: z.boolean().optional(),
-  timer: z.number().min(10, "Timer must be greater than 10").max(60, "Timer must be less than 60"),
-  currentPlayerId: z.string().optional(),
   lastWord: z.string().nonempty().optional(),
   winnerId: z.string().nonempty().optional(),
   index: z.number().optional(),
@@ -26,4 +31,8 @@ export const UpdateGame = z.object({
 
 export const CreateGame = playerName.extend({
   private: z.boolean().default(false),
+})
+
+export const TakeTurn = z.object({
+  word: z.string().nonempty(),
 })
