@@ -1,8 +1,8 @@
-import { resolver } from "blitz"
+import { Ctx, resolver } from "blitz"
 import db from "db"
 import { CreateGame } from "../validations"
 
-export default resolver.pipe(resolver.zod(CreateGame), async ({ name, ...input }) => {
+export default resolver.pipe(resolver.zod(CreateGame), async ({ name, ...input }, ctx: Ctx) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
   const game = await db.game.create({
     data: {
@@ -24,5 +24,13 @@ export default resolver.pipe(resolver.zod(CreateGame), async ({ name, ...input }
       },
     },
   })
+
+  await ctx.session.$setPublicData({
+    playerId: game.players[0]!.id,
+    playerName: game.players[0]!.name,
+    gameId: game.id,
+    role: "Host",
+  })
+
   return game
 })

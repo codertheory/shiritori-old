@@ -20,13 +20,16 @@ import { Card } from "../../core/components/Card"
 import { LobbyPlayerList } from "./LobbyPlayerList"
 import { Routes, useMutation, useParam, useQuery, useRouter } from "blitz"
 import { CountDown } from "./CountDown"
-import { FORM_ERROR, GameForm } from "./forms/GameForm"
+import { FORM_ERROR, GameSettingsForm } from "./forms/GameSettingsForm"
 import updateGame from "../mutations/updateGame"
 import { UpdateGame } from "../validations"
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useChannel, useEvent, useTrigger } from "@harelpls/use-pusher"
 import { UnCloseableModal } from "../../core/components/UnCloseableModal"
 import getGame from "../queries/getGame"
+import { globalState, GlobalStateType } from "../../auth/state"
+import { useState as globalUseState } from "@hookstate/core"
+import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 
 const Lobby = () => {
   const gameId = useParam("gameId", "string")
@@ -39,12 +42,17 @@ const Lobby = () => {
   const router = useRouter()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { value, hasCopied, onCopy } = useClipboard(window.location.href)
+  const state = globalUseState<GlobalStateType>(globalState)
 
   useEvent(channel, "game-started", async (data) => {
     onOpen()
   })
 
   useEvent(channel, "player-created", async (data) => {
+    await refetch()
+  })
+
+  useEvent(channel, "player-deleted", async ({ id }) => {
     await refetch()
   })
 
@@ -71,13 +79,18 @@ const Lobby = () => {
               </Heading>
               <Divider />
               <Box pt={15}>
-                <GameForm
-                  submitText="Start Game"
+                <GameSettingsForm
                   schema={UpdateGame}
-                  initialValues={{}}
+                  submitText="Start Game"
+                  submitButtonProps={{
+                    disabled: !state.host.value,
+                  }}
+                  initialValues={{ timer: 15 }}
                   onSubmit={async (values) => {
-                    setGameData(values)
-                    await trigger("game-started", { id: game.id })
+                    if (state.host.value) {
+                      setGameData(values)
+                      await trigger("game-started", { id: game.id })
+                    }
                   }}
                 />
               </Box>
@@ -89,7 +102,9 @@ const Lobby = () => {
                 Players
               </Heading>
               <Divider />
-              <LobbyPlayerList gameId={game.id} />
+              <Suspense fallback={<LoadingSpinner />}>
+                <LobbyPlayerList gameId={game.id} />
+              </Suspense>
             </Card>
           </GridItem>
         </SimpleGrid>

@@ -4,11 +4,11 @@ import { Card } from "../core/components/Card"
 import { CreateGameForm, FORM_ERROR } from "../games/components/forms/CreateGameForm"
 import { CreateGame } from "../games/validations"
 import { useState } from "@hookstate/core"
-import { globalState } from "../auth/state"
+import { globalState, GlobalStateType } from "../auth/state"
 import createGame from "../games/mutations/createGame"
 
 const NewGamePage: BlitzPage = () => {
-  const state = useState(globalState)
+  const state = useState<GlobalStateType>(globalState)
   const router = useRouter()
   const [createGameMutation] = useMutation(createGame)
   return (
@@ -25,6 +25,7 @@ const NewGamePage: BlitzPage = () => {
             state.set({
               playerId: data.players![0]?.id ?? undefined,
               gameId: data.id,
+              host: true,
             })
             await router.replace(Routes.ShowGamePage({ gameId: data.id }))
           } catch (error) {

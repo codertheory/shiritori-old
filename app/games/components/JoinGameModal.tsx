@@ -6,10 +6,10 @@ import { UnCloseableModal } from "../../core/components/UnCloseableModal"
 import { CreatePlayer } from "../../players/validations"
 import { useTrigger } from "@harelpls/use-pusher"
 import { useState } from "@hookstate/core"
-import { globalState } from "../../auth/state"
+import { globalState, GlobalStateType } from "../../auth/state"
 
 export const JoinGameModal = () => {
-  const state = useState(globalState)
+  const state = useState<GlobalStateType>(globalState)
   const router = useRouter()
   const gameId = useParam("gameId", "string")
   const trigger = useTrigger(gameId!)
@@ -35,6 +35,7 @@ export const JoinGameModal = () => {
                 state.set({
                   playerId: player.id,
                   gameId: gameId!,
+                  host: false,
                 })
                 await trigger("player-created", {})
                 await router.replace(Routes.ShowGamePage({ gameId: gameId! }))

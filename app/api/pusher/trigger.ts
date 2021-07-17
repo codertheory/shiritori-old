@@ -11,9 +11,8 @@ export const serverPusher = new ServerPusher({
 const handler: BlitzApiHandler = async (req, res) => {
   const { channelName, eventName, data } = JSON.parse(req.body)
 
-  await serverPusher.trigger(channelName, eventName, data)
-  res.statusCode = 200
-  res.end()
+  const response = await serverPusher.trigger(channelName, eventName, data)
+  res.status(200).json(response)
 }
 
 export default handler

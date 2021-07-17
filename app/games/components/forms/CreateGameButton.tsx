@@ -21,7 +21,7 @@ export const CreateGameButton = ({ isPublic, children, ...props }: CreateGameBut
       isLoading={isSubmitting && privateValue === "true"}
       loadingText="Submitting"
       onClick={() => {
-        setValue("private", isPublic)
+        setValue("private", !isPublic)
       }}
       {...props}
     >

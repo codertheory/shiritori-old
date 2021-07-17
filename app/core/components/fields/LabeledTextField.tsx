@@ -36,10 +36,8 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
           <NumberField
             isDisabled={isSubmitting}
             {...register(name, {
-              validate: (value) => {
-                console.log("VALUE:", value)
-                return true
-              },
+              valueAsNumber: true,
+              validate: (value) => value,
             })}
           />
         )

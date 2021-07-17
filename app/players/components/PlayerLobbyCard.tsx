@@ -10,8 +10,11 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react"
 import { Player } from "db"
+import { globalState, GlobalStateType } from "../../auth/state"
+import { useState } from "@hookstate/core"
 
 export default function PlayerLobbyCard({ player }: { player: Player }) {
+  const state = useState<GlobalStateType>(globalState)
   return (
     <Center py={6}>
       <Box
@@ -55,6 +58,7 @@ export default function PlayerLobbyCard({ player }: { player: Player }) {
             bg={useColorModeValue("#151f21", "gray.900")}
             color={"white"}
             rounded={"md"}
+            disabled={!state.host.value}
             _hover={{
               transform: "translateY(-2px)",
               boxShadow: "lg",

@@ -2,7 +2,8 @@ import { PropsWithoutRef, ReactNode, useState } from "react"
 import { FormProvider, useForm, UseFormProps, UseFormReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Button, ButtonGroup, Flex } from "@chakra-ui/react"
+import { Button, ButtonGroup, ButtonProps, Flex } from "@chakra-ui/react"
+import { SubmitButton } from "./SubmitButton"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit" | "onReset"> {
@@ -10,6 +11,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   children?: ReactNode
   /** Text to display in the submit button */
   submitText?: string
+  submitButtonProps?: ButtonProps
   schema?: S
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   onReset?: (formContext: UseFormReturn<z.infer<S>>) => void | Promise<void>
@@ -27,6 +29,7 @@ export const FORM_ERROR = "FORM_ERROR"
 export function Form<S extends z.ZodType<any, any>>({
   children,
   submitText,
+  submitButtonProps,
   schema,
   initialValues,
   onSubmit,
@@ -67,6 +70,7 @@ export function Form<S extends z.ZodType<any, any>>({
         className="form"
         {...props}
       >
+        <fieldset disabled />
         {/* Form fields supplied as children are rendered here */}
         {children}
 
@@ -85,15 +89,9 @@ export function Form<S extends z.ZodType<any, any>>({
             )}
 
             {submitText && (
-              <Button
-                type="submit"
-                rounded={"full"}
-                isLoading={ctx.formState.isSubmitting}
-                loadingText="Submitting"
-                colorScheme="teal"
-              >
+              <SubmitButton isLoading={ctx.formState.isSubmitting} {...submitButtonProps}>
                 {submitText}
-              </Button>
+              </SubmitButton>
             )}
           </ButtonGroup>
         </Flex>

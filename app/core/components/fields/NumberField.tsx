@@ -31,7 +31,7 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
           onChange={async (valueAsString, valueAsNumber) => {
             await onChange({
               target: {
-                value: valueAsNumber,
+                value: valueAsString,
                 name: props.name,
                 type: "number",
               },
