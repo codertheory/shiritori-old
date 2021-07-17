@@ -17,13 +17,7 @@ export const UpdateGame = z.object({
   id: z.string(),
   started: z.boolean().optional(),
   finished: z.boolean().optional(),
-  timer: z
-    .string()
-    .transform(parseInt)
-    .refine(
-      (val) => val >= minTimer && val <= maxTimer,
-      `Timer Must be between ${minTimer} and ${maxTimer}`
-    ),
+  timer: z.number().min(10, "Timer must be greater than 10").max(60, "Timer must be less than 60"),
   currentPlayerId: z.string().optional(),
   lastWord: z.string().nonempty().optional(),
   winnerId: z.string().nonempty().optional(),

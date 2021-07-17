@@ -1,25 +1,24 @@
 import { Suspense, useEffect } from "react"
-import { BlitzPage, getAntiCSRFToken, useParam, useQuery } from "blitz"
+import { BlitzPage, getAntiCSRFToken, useParam, useQuery, useSession } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import getGame from "../../games/queries/getGame"
 import Lobby from "../../games/components/Lobby"
 import { Game } from "../../games/components/Game"
-import { globalState, GlobalStateType } from "../../auth/state"
-import { useState } from "@hookstate/core"
+
 import { JoinGameModal } from "../../games/components/JoinGameModal"
 import { useBeforeunload } from "react-beforeunload"
 
 export const GameLoader = () => {
-  const state = useState<GlobalStateType>(globalState)
+  const session = useSession()
   const gameId = useParam("gameId", "string")
   const [game] = useQuery(getGame, { id: gameId })
   const antiCSRFToken = getAntiCSRFToken()
 
   useBeforeunload((event) => {
-    if (state.playerId.value) {
+    if (session.playerId) {
       window
-        .fetch(`/api/games/${gameId}/${state.playerId.value}/leave`, {
+        .fetch(`/api/games/${gameId}/${session.playerId}/leave`, {
           credentials: "include",
           headers: {
             "anti-csrf": antiCSRFToken,
@@ -31,7 +30,7 @@ export const GameLoader = () => {
 
   useEffect(() => {}, [game.started, game.finished])
 
-  if (state.value?.gameId) {
+  if (session.gameId) {
     if (game.started && !game.finished) {
       return <Game />
     } else if (!game.started && !game.finished) {

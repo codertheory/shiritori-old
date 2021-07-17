@@ -70,7 +70,6 @@ export function Form<S extends z.ZodType<any, any>>({
         className="form"
         {...props}
       >
-        <fieldset disabled />
         {/* Form fields supplied as children are rendered here */}
         {children}
 

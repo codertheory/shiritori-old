@@ -10,7 +10,7 @@ export default resolver.pipe(resolver.zod(CreatePlayer), async (input, ctx: Ctx)
     playerId: player.id,
     playerName: player.name,
     gameId: input.gameId,
-    role: "Player",
+    role: "PLAYER",
   })
 
   return player

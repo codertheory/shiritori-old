@@ -5,11 +5,8 @@ import createPlayer from "../../players/mutations/createPlayer"
 import { UnCloseableModal } from "../../core/components/UnCloseableModal"
 import { CreatePlayer } from "../../players/validations"
 import { useTrigger } from "@harelpls/use-pusher"
-import { useState } from "@hookstate/core"
-import { globalState, GlobalStateType } from "../../auth/state"
 
 export const JoinGameModal = () => {
-  const state = useState<GlobalStateType>(globalState)
   const router = useRouter()
   const gameId = useParam("gameId", "string")
   const trigger = useTrigger(gameId!)
@@ -28,14 +25,9 @@ export const JoinGameModal = () => {
             submitText="Join Game"
             onSubmit={async (values) => {
               try {
-                const player = await createPlayerMutation({
+                await createPlayerMutation({
                   gameId: gameId!,
                   name: values.name,
-                })
-                state.set({
-                  playerId: player.id,
-                  gameId: gameId!,
-                  host: false,
                 })
                 await trigger("player-created", {})
                 await router.replace(Routes.ShowGamePage({ gameId: gameId! }))

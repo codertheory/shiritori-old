@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react"
 import { Card } from "../../core/components/Card"
 import { LobbyPlayerList } from "./LobbyPlayerList"
-import { Routes, useMutation, useParam, useQuery, useRouter } from "blitz"
+import { Routes, useMutation, useParam, useQuery, useRouter, useSession } from "blitz"
 import { CountDown } from "./CountDown"
 import { FORM_ERROR, GameSettingsForm } from "./forms/GameSettingsForm"
 import updateGame from "../mutations/updateGame"
@@ -27,9 +27,8 @@ import { Suspense, useState } from "react"
 import { useChannel, useEvent, useTrigger } from "@harelpls/use-pusher"
 import { UnCloseableModal } from "../../core/components/UnCloseableModal"
 import getGame from "../queries/getGame"
-import { globalState, GlobalStateType } from "../../auth/state"
-import { useState as globalUseState } from "@hookstate/core"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
+import { Role } from "../../../types"
 
 const Lobby = () => {
   const gameId = useParam("gameId", "string")
@@ -42,7 +41,8 @@ const Lobby = () => {
   const router = useRouter()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { value, hasCopied, onCopy } = useClipboard(window.location.href)
-  const state = globalUseState<GlobalStateType>(globalState)
+  const session = useSession()
+  const isHost = (session.role as Role) === "HOST"
 
   useEvent(channel, "game-started", async (data) => {
     onOpen()
@@ -83,11 +83,11 @@ const Lobby = () => {
                   schema={UpdateGame}
                   submitText="Start Game"
                   submitButtonProps={{
-                    disabled: !state.host.value,
+                    disabled: !isHost,
                   }}
                   initialValues={{ timer: 15 }}
                   onSubmit={async (values) => {
-                    if (state.host.value) {
+                    if (isHost) {
                       setGameData(values)
                       await trigger("game-started", { id: game.id })
                     }

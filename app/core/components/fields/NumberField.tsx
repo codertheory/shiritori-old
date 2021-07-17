@@ -8,37 +8,31 @@ import {
   NumberInputStepper,
 } from "@chakra-ui/react"
 import React, { useEffect } from "react"
-import { UseFormRegisterReturn } from "react-hook-form"
+import { useFormContext, UseFormRegisterReturn } from "react-hook-form"
 
-interface NumberFieldProps
+export interface NumberFieldProps
   extends UseFormRegisterReturn,
     Omit<NumberInputProps, "name" | "onBlur" | "onChange"> {}
 
 export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
   ({ onChange, ...props }, ref) => {
-    useEffect(() => {}, [])
+    useEffect(() => {}, [props.name])
+    const {
+      setValue,
+      formState: { isSubmitting },
+    } = useFormContext()
 
     return (
       <FormControl>
         <NumberInput
-          defaultValue={15}
-          min={10}
-          max={60}
           clampValueOnBlur={false}
           keepWithinRange
           {...props}
-          inputMode="numeric"
           onChange={async (valueAsString, valueAsNumber) => {
-            await onChange({
-              target: {
-                value: valueAsString,
-                name: props.name,
-                type: "number",
-              },
-            })
+            setValue(props.name, valueAsNumber)
           }}
         >
-          <NumberInputField type={"number"} />
+          <NumberInputField />
           <NumberInputStepper>
             <NumberIncrementStepper />
             <NumberDecrementStepper />

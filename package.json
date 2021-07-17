@@ -32,7 +32,6 @@
     "@emotion/styled": "11.0.0",
     "@harelpls/use-pusher": "7.2.1",
     "@hookform/resolvers": "2.6.1",
-    "@hookstate/core": "3.0.8",
     "@prisma/client": "2.27.0",
     "blitz": "0.38.5",
     "framer-motion": "3.2.0",

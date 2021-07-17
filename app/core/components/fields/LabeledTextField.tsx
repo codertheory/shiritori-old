@@ -1,8 +1,15 @@
 import { forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
-import { FormControl, FormErrorMessage, FormLabel, Input, InputProps } from "@chakra-ui/react"
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  InputProps,
+  NumberInputProps,
+} from "@chakra-ui/react"
 import { PasswordField } from "./PasswordField"
-import { NumberField } from "./NumberField"
+import { NumberField, NumberFieldProps } from "./NumberField"
 
 export interface LabeledTextFieldProps extends PropsWithoutRef<InputProps> {
   /** Field name. */
@@ -11,11 +18,12 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<InputProps> {
   label: string
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: "text" | "password" | "email" | "number"
+  isDisabled?: boolean
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
 export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ label, outerProps, type = "text", name, ...props }, ref) => {
+  ({ label, outerProps, type = "text", name, isDisabled, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -27,24 +35,29 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
 
     switch (type) {
       case "password": {
-        InputComponent = <PasswordField isDisabled={isSubmitting} {...register(name)} {...props} />
+        InputComponent = (
+          <PasswordField isDisabled={isSubmitting || isDisabled} {...register(name)} {...props} />
+        )
         break
       }
       case "number": {
         // @ts-ignore
         InputComponent = (
           <NumberField
-            isDisabled={isSubmitting}
+            isDisabled={isSubmitting || isDisabled}
             {...register(name, {
               valueAsNumber: true,
               validate: (value) => value,
             })}
+            {...(props as NumberFieldProps)}
           />
         )
         break
       }
       default: {
-        InputComponent = <Input isDisabled={isSubmitting} {...register(name)} {...props} />
+        InputComponent = (
+          <Input isDisabled={isSubmitting || isDisabled} {...register(name)} {...props} />
+        )
         break
       }
     }

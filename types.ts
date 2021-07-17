@@ -2,8 +2,7 @@ import { DefaultCtx, SessionContext, SimpleRolesIsAuthorized } from "blitz"
 import { Game, Player } from "db"
 
 // Note: You should switch to Postgres and then use a DB enum for role type
-export type Role = "ADMIN" | "USER"
-export type GameRole = "Player" | "Host"
+export type Role = "ADMIN" | "USER" | "PLAYER" | "HOST"
 
 declare module "blitz" {
   export interface Ctx extends DefaultCtx {
@@ -16,7 +15,7 @@ declare module "blitz" {
       playerId: Player["id"]
       playerName: Player["name"]
       gameId: Game["id"]
-      role: Role | GameRole
+      role: Role
     }
   }
 }

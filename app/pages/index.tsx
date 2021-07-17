@@ -1,14 +1,14 @@
-import { BlitzPage, Routes, useMutation, useRouter } from "blitz"
+import { BlitzPage, Routes, useMutation, useRouter, useSession } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import { Card } from "../core/components/Card"
 import { CreateGameForm, FORM_ERROR } from "../games/components/forms/CreateGameForm"
 import { CreateGame } from "../games/validations"
-import { useState } from "@hookstate/core"
-import { globalState, GlobalStateType } from "../auth/state"
-import createGame from "../games/mutations/createGame"
 
-const NewGamePage: BlitzPage = () => {
-  const state = useState<GlobalStateType>(globalState)
+import createGame from "../games/mutations/createGame"
+import { LoadingSpinner } from "../core/components/LoadingSpinner"
+import { Suspense } from "react"
+
+const NewGame = () => {
   const router = useRouter()
   const [createGameMutation] = useMutation(createGame)
   return (
@@ -21,11 +21,6 @@ const NewGamePage: BlitzPage = () => {
             const data = await createGameMutation({
               private: isPrivate,
               name,
-            })
-            state.set({
-              playerId: data.players![0]?.id ?? undefined,
-              gameId: data.id,
-              host: true,
             })
             await router.replace(Routes.ShowGamePage({ gameId: data.id }))
           } catch (error) {
@@ -40,6 +35,14 @@ const NewGamePage: BlitzPage = () => {
   )
 }
 
+const NewGamePage: BlitzPage = () => {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <NewGame />
+    </Suspense>
+  )
+}
+NewGamePage.suppressFirstRenderFlicker = true
 NewGamePage.getLayout = (page) => <Layout title={"Create New Game"}>{page}</Layout>
 
 export default NewGamePage
