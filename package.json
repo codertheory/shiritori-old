@@ -44,6 +44,7 @@
     "react-hook-form": "7.11.0",
     "react-icons": "^4.2.0",
     "react-spinners": "^0.11.0",
+    "typo-js-ts": "^2.0.4",
     "zod": "3.5.1"
   },
   "devDependencies": {

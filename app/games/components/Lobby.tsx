@@ -30,7 +30,7 @@ import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import { Role } from "../../../types"
 import { useErrorToast } from "../../core/hooks/useErrorToast"
 
-const Lobby = ({ refetch, game }) => {
+const Lobby = ({ game }) => {
   const gameId = useParam("gameId", "string")
   const [gameSettings, setGameSettings] = useState<any>(undefined)
   const channel = useChannel(gameId)
@@ -45,14 +45,6 @@ const Lobby = ({ refetch, game }) => {
 
   useEvent(channel, "game-countdown-started", async (data) => {
     onOpen()
-  })
-
-  useEvent(channel, "game-started", async (data) => {
-    try {
-      await refetch()
-    } catch (error) {
-      errorToast({ message: error.toString() })
-    }
   })
 
   const startGame = async () => {
@@ -86,7 +78,6 @@ const Lobby = ({ refetch, game }) => {
                   onSubmit={async (values) => {
                     if (isHost) {
                       try {
-                        await refetch()
                         if (game!._count!.players > 1) {
                           setGameSettings(values)
                           await trigger("game-countdown-started", { id: gameId })

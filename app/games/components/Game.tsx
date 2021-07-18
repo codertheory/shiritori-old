@@ -1,29 +1,16 @@
 import { useParam, useQuery } from "blitz"
-import { Center, useDisclosure, Wrap, WrapItem } from "@chakra-ui/react"
+import { Center, Wrap, WrapItem } from "@chakra-ui/react"
 import { Suspense, useEffect } from "react"
-import getGamePlayers from "../queries/getGamePlayers"
 import { PlayerGameCard } from "../../players/components/PlayerGameCard"
-import getGame from "../queries/getGame"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import { useChannel, useEvent } from "@harelpls/use-pusher"
 import getWords from "../../words/queries/getWords"
 import { Word } from "db"
+import getGameWithPlayers from "../queries/getGameWithPlayers"
 
 const GamePlayerList = ({ gameId }: { gameId: string }) => {
-  const [game] = useQuery(
-    getGame,
-    { id: gameId },
-    {
-      enabled: false,
-    }
-  )
-  const [players, { refetch }] = useQuery(
-    getGamePlayers,
-    { id: gameId },
-    {
-      enabled: false,
-    }
-  )
+  const [game, { refetch }] = useQuery(getGameWithPlayers, { id: gameId })
+
   const channel = useChannel(gameId)
 
   useEvent(channel, "turn-taken", async (data) => {
@@ -34,7 +21,7 @@ const GamePlayerList = ({ gameId }: { gameId: string }) => {
 
   return (
     <Wrap spacing={75} py={50}>
-      {players!.map((player) => (
+      {game.players!.map((player) => (
         <WrapItem px={150} key={player.id}>
           <PlayerGameCard player={player} game={game!} />
         </WrapItem>

@@ -15,6 +15,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   schema?: S
   onSubmit: (values: z.infer<S>) => Promise<void | OnSubmitResult>
   onReset?: (formContext: UseFormReturn<z.infer<S>>) => void | Promise<void>
+  hideErrors?: boolean
   initialValues?: UseFormProps<z.infer<S>>["defaultValues"]
 }
 
@@ -34,6 +35,7 @@ export function Form<S extends z.ZodType<any, any>>({
   initialValues,
   onSubmit,
   onReset,
+  hideErrors,
   ...props
 }: FormProps<S>) {
   const ctx = useForm<z.infer<S>>({
@@ -73,7 +75,7 @@ export function Form<S extends z.ZodType<any, any>>({
         {/* Form fields supplied as children are rendered here */}
         {children}
 
-        {formError && (
+        {hideErrors && formError && (
           <div role="alert" style={{ color: "red" }}>
             {formError}
           </div>

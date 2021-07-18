@@ -1,38 +1,88 @@
 import { resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
+import { Typo } from "typo-js-ts"
+
+const typo = new Typo("en_US")
 
 const CreateWord = z.object({
   playerId: z.string(),
   gameId: z.string(),
-  word: z.string(),
-  points: z.number(),
+  word: z
+    .string()
+    .refine(async (value) => {
+      const dict = await typo.ready
+      return dict.check(value)
+    }, "Invalid Word")
+    .optional(),
 })
 
-export default resolver.pipe(resolver.zod(CreateWord), async (input) => {
-  const word = await db.word.create({
-    data: input,
-  })
-  const game = await db.game.findUnique({
-    where: { id: input.gameId },
-    select: {
-      index: true,
-      players: {
-        orderBy: {
-          order: "asc",
+export default resolver.pipe(
+  async (input) => CreateWord.parseAsync(input),
+  async ({ word, ...input }) => {
+    const game = await db.game.findUnique({
+      where: { id: input.gameId },
+      select: {
+        index: true,
+        lastWord: true,
+        players: {
+          orderBy: {
+            order: "asc",
+          },
         },
       },
-    },
-  })
-  const nextIndex = (game!.index + 1) % game!.players!.length
-  const nextPlayer = game!.players[nextIndex]
+    })
 
-  await db.game.update({
-    where: { id: input.gameId },
-    data: {
-      lastWord: word.word,
-      index: nextPlayer!.order,
-    },
-  })
-  return word
-})
+    const starting = game!.index === game!.players!.length ? game!.index : game!.index + 1
+    const nextIndex = starting % game!.players!.length
+    const nextPlayer = game!.players[nextIndex]
+    const transactions: any[] = [
+      db.game.update({
+        where: { id: input.gameId },
+        data: {
+          lastWord: word ?? game!.lastWord,
+          index: nextPlayer!.order,
+        },
+      }),
+    ]
+
+    if (word) {
+      const wordScore = Math.round(word!.length * 1.25)
+      transactions.push(
+        db.word.create({
+          data: {
+            points: wordScore,
+            word: word!,
+            ...input,
+          },
+        })
+      )
+      transactions.push(
+        db.player.update({
+          where: { id: input.playerId },
+          data: {
+            score: {
+              decrement: wordScore,
+            },
+            lastWord: word,
+          },
+        })
+      )
+    } else {
+      transactions.push(
+        db.player.update({
+          where: { id: input.playerId },
+          data: {
+            score: {
+              increment: 15,
+            },
+          },
+        })
+      )
+    }
+
+    await db.$transaction(transactions)
+
+    return word
+  }
+)

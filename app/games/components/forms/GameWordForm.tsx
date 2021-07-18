@@ -15,6 +15,7 @@ export function GameWordForm<S extends z.ZodType<any, any>>({
   return (
     <Form<S> {...props}>
       <LabeledTextField
+        hideErrors={props.hideErrors}
         isDisabled={!isActivePlayer}
         w={"full"}
         type={"text"}

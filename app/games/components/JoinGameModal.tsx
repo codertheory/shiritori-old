@@ -25,11 +25,11 @@ export const JoinGameModal = () => {
             submitText="Join Game"
             onSubmit={async (values) => {
               try {
-                await createPlayerMutation({
+                const player = await createPlayerMutation({
                   gameId: gameId!,
                   name: values.name,
                 })
-                await trigger("player-created", {})
+                await trigger("player-created", player)
                 await router.replace(Routes.ShowGamePage({ gameId: gameId! }))
               } catch (error) {
                 return {

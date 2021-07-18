@@ -19,11 +19,12 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<InputProps> {
   /** Field type. Doesn't include radio buttons and checkboxes */
   type?: "text" | "password" | "email" | "number"
   isDisabled?: boolean
+  hideErrors?: boolean
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
 }
 
 export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
-  ({ label, outerProps, type = "text", name, isDisabled, ...props }, ref) => {
+  ({ label, outerProps, type = "text", name, isDisabled, hideErrors, ...props }, ref) => {
     const {
       register,
       formState: { isSubmitting, errors },
@@ -66,7 +67,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
       <FormControl isInvalid={error}>
         <FormLabel>{label}</FormLabel>
         {InputComponent}
-        {error && <FormErrorMessage>{error}</FormErrorMessage>}
+        {!hideErrors && error && <FormErrorMessage>{error}</FormErrorMessage>}
       </FormControl>
     )
   }

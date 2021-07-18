@@ -1390,11 +1390,6 @@
   resolved "https://registry.yarnpkg.com/@hookform/resolvers/-/resolvers-2.6.1.tgz#d41296521ccebba71f671e105b75cf36071fa293"
   integrity sha512-7tml6bUUzdkk7tYb5LBk4i6ctV/1Rs4U5qVxrNBXZd8ZhxvsELI0TyYrnCK0XSlCo8Htlat8TOzxSZcKWOH5KQ==
 
-"@hookstate/core@3.0.8":
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/@hookstate/core/-/core-3.0.8.tgz#d6838153d6d43c2f35cfca475c31248192564e62"
-  integrity sha512-blQagGIVIbNoUiNCRrvaXqFmUe7WGMY35ok/LENfl2pcIsLBjkreYIZiaSFi83tkycwq7ZOmcQz/R1nvLKhH8w==
-
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.5.0.tgz#1407967d4c6eecd7388f83acf1eaf4d0c6e58ef9"
@@ -10498,6 +10493,11 @@ typescript@~4.3:
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
   integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==
+
+typo-js-ts@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/typo-js-ts/-/typo-js-ts-2.0.4.tgz#4a1b4190213a3ad2848a0f2aef2dff840e6da58d"
+  integrity sha512-tUFUoXTFYUS3Yu28XcrOo2E9oe/lb1VDL6Bx4tqXM6ZBrSWdorCX7hTWM0yNdwWYPsfkwYGHazO6xGaGjsT7YQ==
 
 uc.micro@^1.0.1:
   version "1.0.6"

@@ -8,18 +8,33 @@ import { Game } from "../../games/components/Game"
 
 import { JoinGameModal } from "../../games/components/JoinGameModal"
 import { useBeforeunload } from "react-beforeunload"
+import { useChannel, useEvent } from "@harelpls/use-pusher"
+import { useErrorToast } from "../../core/hooks/useErrorToast"
 
 export const GameLoader = () => {
   const session = useSession()
   const gameId = useParam("gameId", "string")
-  const [game, { refetch }] = useQuery(
-    getGame,
-    { id: gameId },
-    {
-      refetchOnWindowFocus: false,
-    }
-  )
+  const channel = useChannel(gameId)
+  const errorToast = useErrorToast()
+
+  const [game, { refetch }] = useQuery(getGame, { id: gameId }, {})
   const antiCSRFToken = getAntiCSRFToken()
+
+  const refreshGame = async () => {
+    try {
+      await refetch()
+    } catch (error) {
+      errorToast({ message: error.toString() })
+    }
+  }
+
+  useEvent(channel, "game-started", async (data) => {
+    await refreshGame()
+  })
+
+  useEvent(channel, "player-created", async (data) => {
+    await refreshGame()
+  })
 
   useBeforeunload((event) => {
     if (session.playerId) {
@@ -40,7 +55,7 @@ export const GameLoader = () => {
     if (game.started && !game.finished) {
       return <Game />
     } else if (!game.started && !game.finished) {
-      return <Lobby game={game} refetch={refetch} />
+      return <Lobby game={game} />
     } else {
       return <></>
     }
