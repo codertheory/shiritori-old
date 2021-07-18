@@ -10,8 +10,29 @@ const CreateWord = z.object({
 })
 
 export default resolver.pipe(resolver.zod(CreateWord), async (input) => {
-  // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const word = await db.word.create({ data: input })
+  const word = await db.word.create({
+    data: input,
+  })
+  const game = await db.game.findUnique({
+    where: { id: input.gameId },
+    select: {
+      index: true,
+      players: {
+        orderBy: {
+          order: "asc",
+        },
+      },
+    },
+  })
+  const nextIndex = (game!.index + 1) % game!.players!.length
+  const nextPlayer = game!.players[nextIndex]
 
+  await db.game.update({
+    where: { id: input.gameId },
+    data: {
+      lastWord: word.word,
+      index: nextPlayer!.order,
+    },
+  })
   return word
 })

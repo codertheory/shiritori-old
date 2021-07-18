@@ -8,7 +8,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialActions", "selectRelationCount"]
+  previewFeatures = ["referentialActions", "selectRelationCount", "orderByRelation"]
 }
 
 // --------------------------------------
@@ -43,6 +43,8 @@ model Session {
 
 model Game {
   id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   private   Boolean  @default(false)
   started   Boolean  @default(false)
   finished  Boolean  @default(false)
@@ -51,31 +53,35 @@ model Game {
   winner    Player?  @relation("winner", fields: [winnerId], references: [id], onDelete: Cascade)
   winnerId  String?
   index     Int      @default(0)
-  updatedAt DateTime @updatedAt
   players   Player[]
   words     Word[]
 }
 
 model Player {
-  id       String  @id @default(cuid())
-  name     String
-  score    Int     @default(100)
-  game     Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  gameId   String
-  lastWord String?
-  active   Boolean @default(false)
-  winner   Game?   @relation("winner")
-  words    Word[]
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Int      @default(0)
+  name      String
+  score     Int      @default(100)
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId    String
+  lastWord  String?
+  winner    Game?    @relation("winner")
+  words     Word[]
+
+  @@unique([order, gameId])
 }
 
 model Word {
-  id       String @id @default(cuid())
-  word     String
-  points   Int
-  game     Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  gameId   String
-  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  playerId String
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  word      String
+  points    Int
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  gameId    String
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  playerId  String
 }
 
 model Token {

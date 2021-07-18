@@ -14,7 +14,8 @@ const PlayerScore = ({ score }: { score: number }) => {
 export const PlayerGameCard = ({ player, game }: { player: Player; game: Game }) => {
   const session = useSession()
   const isPlayer = session.playerId === player.id
-  const isCurrentPlayer = isPlayer && player.active
+  const isActive = game.index === player.order
+  const isCurrentPlayer = isPlayer && isActive
   const trigger = useTrigger(game.id!)
   useEffect(() => {}, [player])
 
@@ -30,17 +31,17 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
       overflow={"hidden"}
     >
       <Flex justify={"center"}>
-        {player.active && (
+        {isCurrentPlayer && (
           <CountDown
             countdownKey={player.id}
             strokeWidth={2}
-            isPlaying={player.active}
+            isPlaying={isCurrentPlayer}
             size={75}
             duration={game.timer}
             colors={[["#308f8e", 0.33]]}
           />
         )}
-        {!player.active && <Box boxSize={75} />}
+        {!isActive && <Box boxSize={75} />}
       </Flex>
       <Divider pt={5} />
       <Box p={6}>
@@ -60,7 +61,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
         </Stack>
 
         <GameWordForm
-          isActivePlayer={isPlayer && player.active}
+          isActivePlayer={isCurrentPlayer}
           schema={TakeTurn}
           onSubmit={async (values) => {}}
         />

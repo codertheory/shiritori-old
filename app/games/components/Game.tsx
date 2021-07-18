@@ -1,11 +1,13 @@
 import { useParam, useQuery } from "blitz"
-import { Center, Wrap, WrapItem } from "@chakra-ui/react"
+import { Center, useDisclosure, Wrap, WrapItem } from "@chakra-ui/react"
 import { Suspense, useEffect } from "react"
 import getGamePlayers from "../queries/getGamePlayers"
 import { PlayerGameCard } from "../../players/components/PlayerGameCard"
 import getGame from "../queries/getGame"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import { useChannel, useEvent } from "@harelpls/use-pusher"
+import getWords from "../../words/queries/getWords"
+import { Word } from "db"
 
 const GamePlayerList = ({ gameId }: { gameId: string }) => {
   const [game] = useQuery(
@@ -41,16 +43,31 @@ const GamePlayerList = ({ gameId }: { gameId: string }) => {
   )
 }
 
+const GameWord = ({ word }: { word: Word }) => {
+  return <></>
+}
+
+const GameWordList = ({ gameId }: { gameId: string }) => {
+  const [words] = useQuery(getWords, {
+    where: {
+      gameId,
+    },
+  })
+
+  return <></>
+}
+
 export const Game = () => {
   const gameId = useParam("gameId", "string")
 
   useEffect(() => {}, [gameId])
 
   return (
-    <Center>
-      <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<LoadingSpinner />}>
+      <Center>
         <GamePlayerList gameId={gameId!} />
-      </Suspense>
-    </Center>
+      </Center>
+      <GameWordList gameId={gameId!} />
+    </Suspense>
   )
 }
