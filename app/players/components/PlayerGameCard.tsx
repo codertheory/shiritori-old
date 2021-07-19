@@ -1,20 +1,6 @@
 import { Game, Player } from "db"
 import { useEffect } from "react"
-import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
-  Center,
-  Divider,
-  Flex,
-  Heading,
-  Stack,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react"
+import { Box, Divider, Flex, Heading, Stack, useColorModeValue } from "@chakra-ui/react"
 import { CountDown } from "../../games/components/CountDown"
 import { FORM_ERROR, GameWordForm } from "../../games/components/forms/GameWordForm"
 import { TakeTurn } from "../../games/validations"
@@ -55,7 +41,17 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
             size={75}
             duration={game.timer}
             colors={[["#308f8e", 0.33]]}
-            onComplete={(totalElapsedTime) => {}}
+            onComplete={(totalElapsedTime) => {
+              if (isCurrentPlayer) {
+                createWordMutation({
+                  playerId: player.id,
+                  gameId: game.id,
+                  word: "",
+                }).then((r) => {
+                  trigger("turn-taken").then()
+                })
+              }
+            }}
           />
         </Box>
       </Flex>
