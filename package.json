@@ -10,6 +10,7 @@
     "studio": "blitz prisma studio",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "test": "jest",
+    "ci": "jest --ci --reporters=default --reporters=jest-junit",
     "test:watch": "jest --watch",
     "prepare": "husky install"
   },
@@ -54,6 +55,7 @@
     "@types/react-beforeunload": "2.1.1",
     "eslint": "7.30.0",
     "husky": "6.0.0",
+    "jest-junit": "12.2.0",
     "jest-mock-extended": "1.0.18",
     "lint-staged": "10.5.4",
     "prettier": "2.3.2",
