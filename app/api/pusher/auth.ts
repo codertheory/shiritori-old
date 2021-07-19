@@ -1,6 +1,7 @@
 import { BlitzApiHandler, getSession } from "blitz"
-import { serverPusher } from "./trigger"
+
 import { PresenceChannelData } from "pusher"
+import { serverPusher } from "../../pusher"
 
 const handler: BlitzApiHandler = async (req, res) => {
   const { socket_id, channel_name } = req.body
@@ -13,7 +14,7 @@ const handler: BlitzApiHandler = async (req, res) => {
     },
   }
 
-  const auth = serverPusher.authenticate(socket_id, channel_name, presenceData)
+  const auth = await serverPusher.authenticate(socket_id, channel_name, presenceData)
   res.status(200).json(auth)
 }
 

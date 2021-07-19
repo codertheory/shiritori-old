@@ -1,6 +1,6 @@
 import { BlitzApiHandler, getSession } from "blitz"
 import db from "db"
-import { serverPusher } from "../../../pusher/trigger"
+import { serverPusher } from "../../../../pusher"
 
 export const handler: BlitzApiHandler = async (req, res) => {
   try {
@@ -22,7 +22,7 @@ export const handler: BlitzApiHandler = async (req, res) => {
         },
       })
       if (game) {
-        if (game._count?.players) {
+        if (game._count?.players !== undefined) {
           if (game._count.players === 0) {
             await db.game.delete({
               where: { id: gameId },
