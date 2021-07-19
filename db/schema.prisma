@@ -82,6 +82,8 @@ model Word {
   gameId    String
   player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
   playerId  String
+
+  @@unique([word, gameId])
 }
 
 model Token {
