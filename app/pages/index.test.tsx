@@ -6,6 +6,14 @@ import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 jest.mock("app/core/hooks/useCurrentUser")
 const mockUseCurrentUser = useCurrentUser as jest.MockedFunction<typeof useCurrentUser>
 
+describe.skip("Create Game Page Tests", () => {
+  it("Renders Form successfully", async () => {
+    const { getByText } = render(<Home />)
+    const formElement = getByText("Username")
+    expect(formElement).toBeInTheDocument()
+  })
+})
+
 test.skip("renders blitz documentation link", () => {
   // This is an example of how to ensure a specific item is in the document
   // But it's disabled by default (by test.skip) so the test doesn't fail
