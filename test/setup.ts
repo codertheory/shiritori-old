@@ -2,6 +2,7 @@
 // It's a good place to set globals, add global before/after hooks, etc
 
 import { SessionContext } from "blitz"
+import db from "db"
 
 const mockContextSession: SessionContext = {
   userId: undefined,
@@ -19,4 +20,8 @@ const mockContextSession: SessionContext = {
   $setPublicData: jest.fn(),
 }
 
-export { mockContextSession } // so TS doesn't complain
+export { mockContextSession }
+
+afterAll(async () => {
+  await db.$disconnect()
+})
