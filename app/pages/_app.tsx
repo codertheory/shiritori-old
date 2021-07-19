@@ -10,7 +10,7 @@ import {
 } from "blitz"
 import LoginForm from "app/auth/components/LoginForm"
 import { PusherProvider } from "@harelpls/use-pusher"
-
+import theme from "../theme"
 import { ChakraProvider } from "@chakra-ui/react"
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -37,7 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <PusherProvider {...config}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <ErrorBoundary
           FallbackComponent={RootErrorFallback}
           onReset={useQueryErrorResetBoundary().reset}

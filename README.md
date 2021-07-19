@@ -2,6 +2,8 @@
 
 This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
+[![CI](https://github.com/codertheory/shiritori/actions/workflows/test.yml/badge.svg)](https://github.com/codertheory/shiritori/actions/workflows/test.yml)
+
 # **shiritori**
 
 ## Getting Started
