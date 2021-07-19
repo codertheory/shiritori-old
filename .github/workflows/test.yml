@@ -46,7 +46,7 @@ jobs:
       - run: yarn install
 
       - run: yarn lint
-      - run: blitz prisma migrate dev
+      - run: yarn blitz prisma migrate dev
       - run: yarn ci
 
       - uses: IgnusG/jest-report-action@v2.3.3
