@@ -38,19 +38,22 @@ describe("Leave Endpoint", () => {
         id: sessionData.gameId,
       },
     })
-  })
-
-  it("Attempt to leave when player already deleted", async () => {
-    await expect(handler(req, res)).rejects.toMatchObject({ code: "P2025" }) // P2025 Means entity could not be found to be deleted
-  })
-
-  it("Deletes Player when more than 1 person remains", async () => {
     await createPlayer({
       gameId: sessionData.gameId,
       id: sessionData.playerId,
       name: sessionData.playerName,
       order: 0,
     })
+  })
+
+  it("Attempt to leave when player already deleted", async () => {
+    await db.player.delete({
+      where: { id: sessionData.playerId },
+    })
+    await expect(handler(req, res)).rejects.toMatchObject({ code: "P2025" }) // P2025 Means entity could not be found to be deleted
+  })
+
+  it("Deletes Player when more than 1 person remains", async () => {
     await createPlayer({
       gameId: sessionData.gameId,
       name: sessionData.playerName,
@@ -65,11 +68,6 @@ describe("Leave Endpoint", () => {
   })
 
   it("Deletes the Player and the game when last to leave", async () => {
-    await createPlayer({
-      gameId: sessionData.gameId,
-      id: sessionData.playerId,
-      name: sessionData.playerName,
-    })
     await handler(req, res)
     expect(res._getStatusCode()).toBe(200)
     const game = await db.game.findFirst({
