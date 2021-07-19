@@ -2,9 +2,18 @@ import { render } from "test/utils"
 
 import Home from "./index"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { get } from "react-hook-form"
 
 jest.mock("app/core/hooks/useCurrentUser")
 const mockUseCurrentUser = useCurrentUser as jest.MockedFunction<typeof useCurrentUser>
+
+describe("Create Game Page Tests", () => {
+  it("Renders Form successfully", async () => {
+    const { getByText } = render(<Home />)
+    const formElement = getByText("Username")
+    expect(formElement).toBeInTheDocument()
+  })
+})
 
 test.skip("renders blitz documentation link", () => {
   // This is an example of how to ensure a specific item is in the document

@@ -1,4 +1,22 @@
 // This is the jest 'setupFilesAfterEnv' setup file
 // It's a good place to set globals, add global before/after hooks, etc
 
-export {} // so TS doesn't complain
+import { SessionContext } from "blitz"
+
+const mockContextSession: SessionContext = {
+  userId: undefined,
+  $publicData: {
+    userId: null,
+  },
+  $handle: null,
+  $authorize: jest.fn(),
+  $isAuthorized: jest.fn(),
+  $create: jest.fn(),
+  $revoke: jest.fn(),
+  $revokeAll: jest.fn(),
+  $getPrivateData: jest.fn(),
+  $setPrivateData: jest.fn(),
+  $setPublicData: jest.fn(),
+}
+
+export { mockContextSession } // so TS doesn't complain
