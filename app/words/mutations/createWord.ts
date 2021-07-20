@@ -11,8 +11,12 @@ const CreateWord = z.object({
   word: z
     .string()
     .refine(async (value) => {
-      const dict = await typo.ready
-      return dict.check(value)
+      if (value.length > 0) {
+        const dict = await typo.ready
+        return dict.check(value)
+      } else {
+        return true
+      }
     }, "Invalid Word")
     .optional(),
 })
@@ -81,7 +85,9 @@ export default resolver.pipe(
       )
     }
 
-    await db.$transaction(transactions)
+    const response = await db.$transaction(transactions)
+
+    console.log(response)
 
     return word
   }

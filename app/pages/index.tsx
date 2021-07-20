@@ -7,12 +7,16 @@ import { CreateGame } from "../games/validations"
 import createGame from "../games/mutations/createGame"
 import { LoadingSpinner } from "../core/components/LoadingSpinner"
 import { Suspense } from "react"
+import { Center, Heading } from "@chakra-ui/react"
 
-const NewGame = () => {
+export const NewGame = () => {
   const router = useRouter()
   const [createGameMutation] = useMutation(createGame)
   return (
     <Card>
+      <Center>
+        <Heading>Create Game</Heading>
+      </Center>
       <CreateGameForm
         schema={CreateGame}
         onSubmit={async ({ private: isPrivate, name }) => {

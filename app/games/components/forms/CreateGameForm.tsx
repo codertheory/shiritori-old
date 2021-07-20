@@ -12,7 +12,7 @@ export function CreateGameForm<S extends z.ZodType<any, any>>(props: FormProps<S
       <LabeledTextField
         type={"text"}
         name={"name"}
-        label={"Username"}
+        label={""}
         placeholder={"Some Wacky Username"}
       />
       <LabeledTextField label={""} name={"private"} hidden />

@@ -48,9 +48,10 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
                   gameId: game.id,
                   word: "",
                 }).then((r) => {
-                  trigger("turn-taken").then()
+                  trigger("turn-taken", {}).then()
                 })
               }
+              return [true, game.timer]
             }}
           />
         </Box>
