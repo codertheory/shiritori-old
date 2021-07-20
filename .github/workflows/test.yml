@@ -47,7 +47,7 @@ jobs:
 
       - run: yarn lint
       - run: yarn blitz prisma migrate dev
-      - run: yarn ci
+      - run: yarn test
 
       - uses: IgnusG/jest-report-action@v2.3.3
         if: always() # Or use "continue-on-error: true" in previous test step

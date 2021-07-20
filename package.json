@@ -8,9 +8,13 @@
     "start": "blitz start",
     "start:production": "blitz start --port $PORT",
     "studio": "blitz prisma studio",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
-    "test": "jest",
-    "ci": "jest --ci --reporters=default --reporters=jest-junit",
+    "test": "prisma generate && blitz codegen && yarn test:jest && yarn test:e2e",
+    "test:server": "cross-env NODE_ENV=test blitz prisma migrate deploy && blitz build && cross-env NODE_ENV=test blitz start -p 3099",
+    "test:e2e": "cross-env NODE_ENV=test start-server-and-test test:server http://localhost:3099 cy:run",
+    "test:jest": "jest --ci --reporters=default --reporters=jest-junit",
     "test:watch": "jest --watch",
     "prepare": "husky install"
   },
@@ -50,21 +54,26 @@
     "zod": "3.5.1"
   },
   "devDependencies": {
+    "@cypress/react": "5.9.1",
     "@types/preview-email": "2.0.1",
     "@types/react": "17.0.14",
     "@types/react-beforeunload": "2.1.1",
-    "node-mocks-http": "^1.10.1",
+    "cross-env": "7.0.3",
+    "cypress": "8.0.0",
     "eslint": "7.30.0",
     "husky": "6.0.0",
     "jest-junit": "12.2.0",
     "jest-mock-extended": "1.0.18",
     "lint-staged": "10.5.4",
+    "node-mocks-http": "^1.10.1",
     "prettier": "2.3.2",
     "prettier-plugin-prisma": "0.14.0",
     "pretty-quick": "3.1.1",
     "preview-email": "3.0.4",
     "prisma": "2.27.0",
-    "typescript": "~4.3"
+    "start-server-and-test": "1.12.6",
+    "typescript": "~4.3",
+    "webpack": "5.45.1"
   },
   "private": true
 }

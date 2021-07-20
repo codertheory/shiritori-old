@@ -53,3 +53,4 @@ lib-cov
 .vscode-test
 .idea
 /junit.xml
+/cypress/videos/
