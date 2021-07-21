@@ -1,7 +1,7 @@
 import { Form, FormProps } from "app/core/components/Form"
 import { LabeledTextField } from "app/core/components/fields/LabeledTextField"
 import { z } from "zod"
-import { CreateGameButton } from "./CreateGameButton"
+import { CreateGameButton } from "../buttons/CreateGameButton"
 import { Center, VStack } from "@chakra-ui/react"
 
 export { FORM_ERROR } from "app/core/components/Form"
