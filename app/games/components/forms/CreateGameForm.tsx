@@ -18,10 +18,12 @@ export function CreateGameForm<S extends z.ZodType<any, any>>(props: FormProps<S
       <LabeledTextField label={""} name={"private"} hidden />
       <Center pt="32px">
         <VStack>
-          <CreateGameButton disabled isPublic>
+          <CreateGameButton id="create-public-game-btn" disabled isPublic>
             Create Public Game
           </CreateGameButton>
-          <CreateGameButton isPublic={false}>Create Private Game</CreateGameButton>
+          <CreateGameButton id="create-private-game-btn" isPublic={false}>
+            Create Private Game
+          </CreateGameButton>
         </VStack>
       </Center>
     </Form>

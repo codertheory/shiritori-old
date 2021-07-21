@@ -1,13 +1,6 @@
 import { forwardRef, PropsWithoutRef } from "react"
 import { useFormContext } from "react-hook-form"
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  InputProps,
-  NumberInputProps,
-} from "@chakra-ui/react"
+import { FormControl, FormErrorMessage, FormLabel, Input, InputProps } from "@chakra-ui/react"
 import { PasswordField } from "./PasswordField"
 import { NumberField, NumberFieldProps } from "./NumberField"
 
@@ -37,7 +30,12 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
     switch (type) {
       case "password": {
         InputComponent = (
-          <PasswordField isDisabled={isSubmitting || isDisabled} {...register(name)} {...props} />
+          <PasswordField
+            id={`field-${name}`}
+            isDisabled={isSubmitting || isDisabled}
+            {...register(name)}
+            {...props}
+          />
         )
         break
       }
@@ -45,6 +43,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
         // @ts-ignore
         InputComponent = (
           <NumberField
+            id={`field-${name}`}
             isDisabled={isSubmitting || isDisabled}
             {...register(name, {
               valueAsNumber: true,
@@ -57,7 +56,12 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
       }
       default: {
         InputComponent = (
-          <Input isDisabled={isSubmitting || isDisabled} {...register(name)} {...props} />
+          <Input
+            id={`field-${name}`}
+            isDisabled={isSubmitting || isDisabled}
+            {...register(name)}
+            {...props}
+          />
         )
         break
       }
@@ -65,7 +69,9 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
 
     return (
       <FormControl isInvalid={error}>
-        <FormLabel>{label}</FormLabel>
+        <FormLabel id={`field-${name}-label`} for={`field-${name}`}>
+          {label}
+        </FormLabel>
         {InputComponent}
         {!hideErrors && error && <FormErrorMessage>{error}</FormErrorMessage>}
       </FormControl>
