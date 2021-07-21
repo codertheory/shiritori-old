@@ -38,6 +38,7 @@
     "@harelpls/use-pusher": "7.2.1",
     "@hookform/resolvers": "2.6.1",
     "@prisma/client": "2.27.0",
+    "animated-number-react": "0.1.2",
     "blitz": "0.38.5",
     "framer-motion": "3.2.0",
     "install": "0.13.0",

@@ -1,5 +1,5 @@
 import { Game, Player } from "db"
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 import { Box, Divider, Flex, Heading, Stack, useColorModeValue } from "@chakra-ui/react"
 import { CountDown } from "../../games/components/CountDown"
 import { FORM_ERROR, GameWordForm } from "../../games/components/forms/GameWordForm"
@@ -7,9 +7,12 @@ import { TakeTurn } from "../../games/validations"
 import { useTrigger } from "@harelpls/use-pusher"
 import { useMutation, useSession } from "blitz"
 import createWord from "../../words/mutations/createWord"
+import AnimatedNumber from "animated-number-react"
 
 const PlayerScore = ({ score }: { score: number }) => {
-  return <p>{score}</p>
+  const formatValue = (value) => value.toFixed(2)
+
+  return <AnimatedNumber value={score} formatValue={formatValue} />
 }
 
 export const PlayerGameCard = ({ player, game }: { player: Player; game: Game }) => {
