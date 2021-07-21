@@ -49,11 +49,39 @@ const Lobby = ({ game }) => {
 
   const startGame = async () => {
     try {
-      await updateGameMutation({ id: gameId, started: true, ...gameSettings })
+      await updateGameMutation({ id: gameId!, started: true, ...gameSettings })
       await trigger("game-started", {})
     } catch (error) {
       console.error(error)
       errorToast({ message: error.toString() })
+    }
+  }
+
+  const submitSettingsForm = async (values) => {
+    if (isHost) {
+      try {
+        if (game!._count!.players > 1) {
+          setGameSettings(values)
+          await trigger("game-countdown-started", { id: gameId })
+        } else {
+          errorToast({ message: "Cannot start a game with less than 2 players" })
+          return {
+            [FORM_ERROR]: "",
+          }
+        }
+      } catch (error) {
+        return {
+          [FORM_ERROR]: error.toString(),
+        }
+      }
+    }
+  }
+
+  const onCountDownFinish = (totalElapsedTime: number) => {
+    if (isHost) {
+      startGame().then(() => onClose())
+    } else {
+      onClose()
     }
   }
 
@@ -75,25 +103,7 @@ const Lobby = ({ game }) => {
                     disabled: !isHost,
                   }}
                   initialValues={{ timer: 15 }}
-                  onSubmit={async (values) => {
-                    if (isHost) {
-                      try {
-                        if (game!._count!.players > 1) {
-                          setGameSettings(values)
-                          await trigger("game-countdown-started", { id: gameId })
-                        } else {
-                          errorToast({ message: "Cannot start a game with less than 2 players" })
-                          return {
-                            [FORM_ERROR]: "",
-                          }
-                        }
-                      } catch (error) {
-                        return {
-                          [FORM_ERROR]: error.toString(),
-                        }
-                      }
-                    }
-                  }}
+                  onSubmit={submitSettingsForm}
                 />
               </Box>
             </Card>
@@ -139,16 +149,7 @@ const Lobby = ({ game }) => {
           </ModalHeader>
           <ModalBody>
             <Center>
-              <CountDown
-                duration={5}
-                onComplete={(totalElapsedTime) => {
-                  if (isHost) {
-                    startGame().then(() => onClose())
-                  } else {
-                    onClose()
-                  }
-                }}
-              />
+              <CountDown duration={5} onComplete={onCountDownFinish} />
             </Center>
           </ModalBody>
         </ModalContent>
