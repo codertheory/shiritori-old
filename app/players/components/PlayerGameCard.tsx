@@ -8,6 +8,7 @@ import { useTrigger } from "@harelpls/use-pusher"
 import { useMutation, useSession } from "blitz"
 import createWord from "../../words/mutations/createWord"
 import AnimatedNumber from "animated-number-react"
+import { CountdownCircleTimerProps } from "react-countdown-circle-timer"
 
 const PlayerScore = ({ score }: { score: number }) => {
   const formatValue = (value) => value.toFixed(2)
@@ -23,6 +24,34 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
   const trigger = useTrigger(game.id!)
   const [createWordMutation] = useMutation(createWord)
   useEffect(() => {}, [player])
+
+  const submitGameWordForm = async (values) => {
+    try {
+      const word = await createWordMutation({
+        playerId: player.id,
+        gameId: game.id,
+        word: values.word,
+      })
+      await trigger("turn-taken", { word })
+    } catch (error) {
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  const onTimerComplete: CountdownCircleTimerProps["onComplete"] = (totalElapsedTime) => {
+    if (isCurrentPlayer) {
+      createWordMutation({
+        playerId: player.id,
+        gameId: game.id,
+        word: "",
+      }).then((r) => {
+        trigger("turn-taken", {}).then()
+      })
+    }
+    return [true, game.timer]
+  }
 
   return (
     <Box
@@ -44,18 +73,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
             size={75}
             duration={game.timer}
             colors={[["#308f8e", 0.33]]}
-            onComplete={(totalElapsedTime) => {
-              if (isCurrentPlayer) {
-                createWordMutation({
-                  playerId: player.id,
-                  gameId: game.id,
-                  word: "",
-                }).then((r) => {
-                  trigger("turn-taken", {}).then()
-                })
-              }
-              return [true, game.timer]
-            }}
+            onComplete={onTimerComplete}
           />
         </Box>
       </Flex>
@@ -79,20 +97,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
           isActivePlayer={isCurrentPlayer}
           schema={TakeTurn}
           initialValues={{ word: game.lastWord || "" }}
-          onSubmit={async (values) => {
-            try {
-              const word = await createWordMutation({
-                playerId: player.id,
-                gameId: game.id,
-                word: values.word,
-              })
-              await trigger("turn-taken", { word })
-            } catch (error) {
-              return {
-                [FORM_ERROR]: error.toString(),
-              }
-            }
-          }}
+          onSubmit={submitGameWordForm}
         />
       </Box>
     </Box>
