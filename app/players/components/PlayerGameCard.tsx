@@ -65,11 +65,9 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
           <Heading>
             <PlayerScore score={player.score} />
           </Heading>
-          {player.lastWord ?? (
-            <Heading fontSize={"1xl"} fontWeight={200} fontFamily={"body"}>
-              {player.lastWord}
-            </Heading>
-          )}
+          <Heading pt={5} mb={-5} fontSize={"1xl"} fontWeight={200} fontFamily={"subtitle"}>
+            {player.lastWord}
+          </Heading>
         </Stack>
       </Box>
       <Divider />
