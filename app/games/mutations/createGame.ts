@@ -2,6 +2,8 @@ import { Ctx, resolver } from "blitz"
 import db from "db"
 import { CreateGame } from "../validations"
 
+const alphabet = "abcdefghijklmnopqrstuvwxyz"
+
 export default resolver.pipe(resolver.zod(CreateGame), async ({ name, ...input }, ctx: Ctx) => {
   const game = await db.game.create({
     data: {
@@ -12,6 +14,7 @@ export default resolver.pipe(resolver.zod(CreateGame), async ({ name, ...input }
           },
         ],
       },
+      lastWord: alphabet[Math.floor(Math.random() * alphabet.length)],
       ...input,
     },
     include: {
