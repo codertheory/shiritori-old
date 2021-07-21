@@ -69,9 +69,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
 
     return (
       <FormControl isInvalid={error}>
-        <FormLabel id={`field-${name}-label`} for={`field-${name}`}>
-          {label}
-        </FormLabel>
+        <FormLabel id={`field-${name}-label`}>{label}</FormLabel>
         {InputComponent}
         {!hideErrors && error && <FormErrorMessage>{error}</FormErrorMessage>}
       </FormControl>
