@@ -1,19 +1,41 @@
 import { Game, Player } from "db"
 import React, { useEffect } from "react"
-import { Box, Divider, Flex, Heading, Stack, useColorModeValue } from "@chakra-ui/react"
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  Heading,
+  Stack,
+  Stat,
+  StatLabel,
+  StatNumber,
+  useColorModeValue,
+} from "@chakra-ui/react"
 import { CountDown } from "../../games/components/CountDown"
 import { FORM_ERROR, GameWordForm } from "../../games/components/forms/GameWordForm"
 import { TakeTurn } from "../../games/validations"
 import { useTrigger } from "@harelpls/use-pusher"
 import { useMutation, useSession } from "blitz"
-import createWord from "../../words/mutations/createWord"
+import createWordMutation from "../../words/mutations/createWord"
 import AnimatedNumber from "animated-number-react"
 import { CountdownCircleTimerProps } from "react-countdown-circle-timer"
 
 const PlayerScore = ({ score }: { score: number }) => {
-  const formatValue = (value) => value.toFixed(2)
+  const formatValue = (value: number) => value.toFixed(2)
 
-  return <AnimatedNumber value={score} formatValue={formatValue} />
+  useEffect(() => {}, [score])
+
+  return (
+    <Stat pt={6}>
+      <StatLabel>
+        <Center>Score</Center>
+      </StatLabel>
+      <StatNumber>
+        <AnimatedNumber value={score} formatValue={formatValue} />
+      </StatNumber>
+    </Stat>
+  )
 }
 
 export const PlayerGameCard = ({ player, game }: { player: Player; game: Game }) => {
@@ -22,16 +44,20 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
   const isActive = game.index === player.order
   const isCurrentPlayer = isPlayer && isActive
   const trigger = useTrigger(game.id!)
-  const [createWordMutation] = useMutation(createWord)
+  const [cw] = useMutation(createWordMutation)
   useEffect(() => {}, [player])
+
+  const createWord = (word) => {
+    return cw({
+      playerId: player.id,
+      gameId: game.id,
+      word,
+    })
+  }
 
   const submitGameWordForm = async (values) => {
     try {
-      const word = await createWordMutation({
-        playerId: player.id,
-        gameId: game.id,
-        word: values.word,
-      })
+      const word = await createWord(values.word)
       await trigger("turn-taken", { word })
     } catch (error) {
       return {
@@ -42,11 +68,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
 
   const onTimerComplete: CountdownCircleTimerProps["onComplete"] = (totalElapsedTime) => {
     if (isCurrentPlayer) {
-      createWordMutation({
-        playerId: player.id,
-        gameId: game.id,
-        word: "",
-      }).then((r) => {
+      createWord("").then((r) => {
         trigger("turn-taken", {}).then()
       })
     }
