@@ -4,6 +4,8 @@ import { z } from "zod"
 import { Typo } from "typo-js-ts"
 
 const typo = new Typo("en_US")
+const wordLengthMultiplier = 1.25
+const durationMultiplier = 1.3
 
 const CreateWord = z.object({
   playerId: z.string(),
@@ -19,73 +21,80 @@ const CreateWord = z.object({
       }
     }, "Invalid Word")
     .optional(),
+  totalElapsedTime: z.number().default(1),
 })
 
-export default resolver.pipe(CreateWord.parseAsync, async ({ word, ...input }) => {
-  const game = await db.game.findUnique({
-    where: { id: input.gameId },
-    select: {
-      index: true,
-      lastWord: true,
-      players: {
-        orderBy: {
-          order: "asc",
-        },
-      },
-    },
-  })
-
-  const starting = game!.index === game!.players!.length ? game!.index : game!.index + 1
-  const nextIndex = starting % game!.players!.length
-  const nextPlayer = game!.players[nextIndex]
-  const transactions: any[] = [
-    db.game.update({
+export default resolver.pipe(
+  CreateWord.parseAsync,
+  async ({ word, totalElapsedTime, ...input }) => {
+    const game = await db.game.findUnique({
       where: { id: input.gameId },
-      data: {
-        lastWord: word ?? game!.lastWord,
-        index: nextPlayer!.order,
+      select: {
+        index: true,
+        timer: true,
+        lastWord: true,
+        players: {
+          orderBy: {
+            order: "asc",
+          },
+        },
       },
-    }),
-  ]
+    })
 
-  if (word) {
-    const wordScore = Math.round(word!.length * 1.25)
-    transactions.push(
-      db.word.create({
+    const starting = game!.index === game!.players!.length ? game!.index : game!.index + 1
+    const nextIndex = starting % game!.players!.length
+    const nextPlayer = game!.players[nextIndex]
+    const transactions: any[] = [
+      db.game.update({
+        where: { id: input.gameId },
         data: {
-          points: wordScore,
-          word: word!,
-          ...input,
+          lastWord: word ?? game!.lastWord,
+          index: nextPlayer!.order,
         },
-      })
-    )
-    transactions.push(
-      db.player.update({
-        where: { id: input.playerId },
-        data: {
-          score: {
-            decrement: wordScore,
+      }),
+    ]
+
+    if (word) {
+      const wordScore = Math.round(
+        word!.length * wordLengthMultiplier * (totalElapsedTime * durationMultiplier)
+      )
+      transactions.push(
+        db.word.create({
+          data: {
+            points: wordScore,
+            word: word!,
+            ...input,
           },
-          lastWord: word,
-        },
-      })
-    )
-  } else {
-    transactions.push(
-      db.player.update({
-        where: { id: input.playerId },
-        data: {
-          score: {
-            increment: 15,
+        })
+      )
+      transactions.push(
+        db.player.update({
+          where: { id: input.playerId },
+          data: {
+            score: {
+              decrement: wordScore,
+            },
+            lastWord: word,
           },
-        },
-      })
-    )
+        })
+      )
+    } else {
+      transactions.push(
+        db.player.update({
+          where: { id: input.playerId },
+          data: {
+            score: {
+              increment: 15,
+            },
+          },
+        })
+      )
+    }
+
+    const response = await db.$transaction(transactions)
+
+    console.log(response)
+
+    return word
   }
-
-  const response = await db.$transaction(transactions)
-
-  console.log(response)
-
-  return word
-})
+)

@@ -5,7 +5,7 @@ import Home from "./index"
 describe("Create Game Page Tests", () => {
   it("Renders Form successfully", async () => {
     const { getByText } = render(<Home />)
-    const formElement = getByText("Create Game")
+    const formElement = getByText("With your Friends!")
     expect(formElement).toBeInTheDocument()
   })
 })
