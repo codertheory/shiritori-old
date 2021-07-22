@@ -1,21 +1,7 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Flex,
-  Heading,
-  Image,
-  Stack,
-  useColorModeValue,
-} from "@chakra-ui/react"
+import { Box, Center, Heading, Stack, useColorModeValue } from "@chakra-ui/react"
 import { Player } from "db"
-import { useSession } from "blitz"
-import { Role } from "../../../types"
 
 export default function PlayerLobbyCard({ player }: { player: Player }) {
-  const session = useSession()
-  const isHost = (session.role as Role) === "HOST"
   return (
     <Center py={6}>
       <Box
@@ -26,27 +12,6 @@ export default function PlayerLobbyCard({ player }: { player: Player }) {
         rounded={"md"}
         overflow={"hidden"}
       >
-        <Image
-          h={"100px"}
-          w={"full"}
-          src={
-            "https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-          }
-          objectFit={"cover"}
-        />
-        <Flex justify={"center"} mt={-12}>
-          <Avatar
-            size={"xl"}
-            src={
-              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-            }
-            alt={"Author"}
-            css={{
-              border: "2px solid white",
-            }}
-          />
-        </Flex>
-
         <Box p={6}>
           <Stack spacing={0} align={"center"} mb={5}>
             <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
@@ -54,19 +19,19 @@ export default function PlayerLobbyCard({ player }: { player: Player }) {
             </Heading>
           </Stack>
 
-          <Button
-            w={"full"}
-            bg={useColorModeValue("#151f21", "gray.900")}
-            color={"white"}
-            rounded={"md"}
-            disabled={!isHost || player.id === session.playerId}
-            _hover={{
-              transform: "translateY(-2px)",
-              boxShadow: "lg",
-            }}
-          >
-            Kick
-          </Button>
+          {/*<Button*/}
+          {/*  w={"full"}*/}
+          {/*  bg={useColorModeValue("#151f21", "gray.900")}*/}
+          {/*  color={"white"}*/}
+          {/*  rounded={"md"}*/}
+          {/*  disabled={!isHost || player.id === session.playerId}*/}
+          {/*  _hover={{*/}
+          {/*    transform: "translateY(-2px)",*/}
+          {/*    boxShadow: "lg"*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  Kick*/}
+          {/*</Button>*/}
         </Box>
       </Box>
     </Center>
