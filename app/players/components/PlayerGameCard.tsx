@@ -72,7 +72,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
         trigger("turn-taken", {}).then()
       })
     }
-    return [true, game.timer]
+    return [true, 5]
   }
 
   return (
@@ -87,7 +87,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
       overflow={"hidden"}
     >
       <Flex justify={"center"}>
-        <Box visibility={!isCurrentPlayer ? "hidden" : undefined} pt={6}>
+        <Box opacity={isCurrentPlayer ? 1 : 0.6} pt={6}>
           <CountDown
             countdownKey={player.id}
             strokeWidth={2}
