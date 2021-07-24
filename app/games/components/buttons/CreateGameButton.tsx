@@ -1,6 +1,5 @@
 import { Button, ButtonProps } from "@chakra-ui/react"
 import { useFormContext } from "react-hook-form"
-import { useState } from "react"
 
 export interface CreateGameButtonProps
   extends Omit<ButtonProps, "onClick" | "isLoading" | "loadingText"> {
@@ -10,14 +9,17 @@ export interface CreateGameButtonProps
 export const CreateGameButton = ({ isPublic, children, ...props }: CreateGameButtonProps) => {
   const {
     setValue,
+    getValues,
     formState: { isSubmitting },
   } = useFormContext()
+
+  const privateValue = getValues("private") ?? false
 
   return (
     <Button
       type="submit"
       rounded={"full"}
-      isLoading={isSubmitting}
+      isLoading={isSubmitting && privateValue === isPublic}
       loadingText="Submitting"
       onClick={() => {
         setValue("private", !isPublic)
