@@ -30,6 +30,7 @@ export const GameManager = () => {
 
   useEvent(channel, "game-started", async (data) => {
     await refreshGame()
+    game.started = true
   })
 
   useEvent(channel, "player-created", async (data) => {
