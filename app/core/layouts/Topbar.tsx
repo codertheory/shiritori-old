@@ -33,6 +33,7 @@ export default function WithSubnavigation() {
         align={"center"}
       >
         <Flex
+          visibility={"hidden"}
           flex={{ base: 1, md: "auto" }}
           ml={{ base: -2 }}
           display={{ base: "flex", md: "none" }}
@@ -84,10 +85,6 @@ export default function WithSubnavigation() {
           <ThemeModeSwitch />
         </Stack>
       </Flex>
-
-      <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
-      </Collapse>
     </Box>
   )
 }
