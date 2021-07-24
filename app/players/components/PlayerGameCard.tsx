@@ -89,7 +89,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
       <Flex justify={"center"}>
         <Box opacity={isCurrentPlayer ? 1 : 0.6} pt={6}>
           <CountDown
-            countdownKey={player.id}
+            countdownKey={game.index}
             strokeWidth={2}
             isPlaying={isCurrentPlayer}
             size={75}
