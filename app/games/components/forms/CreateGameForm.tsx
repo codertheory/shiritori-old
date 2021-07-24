@@ -19,7 +19,7 @@ export function CreateGameForm<S extends z.ZodType<any, any>>(props: FormProps<S
       <Center pt="32px">
         <VStack>
           <CreateGameButton id="create-public-game-btn" disabled isPublic>
-            Create Public Game
+            Public Matchmaking
           </CreateGameButton>
           <CreateGameButton id="create-private-game-btn" isPublic={false}>
             Create Private Game

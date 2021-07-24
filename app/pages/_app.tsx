@@ -12,6 +12,7 @@ import LoginForm from "app/auth/components/LoginForm"
 import { PusherProvider } from "@harelpls/use-pusher"
 import theme from "../theme"
 import { ChakraProvider } from "@chakra-ui/react"
+import { AnimateSharedLayout } from "framer-motion"
 
 export default function App({ Component, pageProps }: AppProps) {
   const antiCSRFToken = getAntiCSRFToken()
@@ -36,16 +37,18 @@ export default function App({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
 
   return (
-    <PusherProvider {...config}>
-      <ChakraProvider theme={theme}>
-        <ErrorBoundary
-          FallbackComponent={RootErrorFallback}
-          onReset={useQueryErrorResetBoundary().reset}
-        >
-          {getLayout(<Component {...pageProps} />)}
-        </ErrorBoundary>
-      </ChakraProvider>
-    </PusherProvider>
+    <AnimateSharedLayout>
+      <PusherProvider {...config}>
+        <ChakraProvider theme={theme}>
+          <ErrorBoundary
+            FallbackComponent={RootErrorFallback}
+            onReset={useQueryErrorResetBoundary().reset}
+          >
+            {getLayout(<Component {...pageProps} />)}
+          </ErrorBoundary>
+        </ChakraProvider>
+      </PusherProvider>
+    </AnimateSharedLayout>
   )
 }
 

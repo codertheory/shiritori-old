@@ -3,6 +3,8 @@ import {
   Button,
   Center,
   Divider,
+  Flex,
+  Grid,
   GridItem,
   Heading,
   Input,
@@ -88,9 +90,9 @@ const Lobby = ({ game }) => {
   return (
     <>
       <Box p={25}>
-        <SimpleGrid p={25} columns={2} spacingX="40px" spacingY="20px">
-          <GridItem>
-            <Card>
+        <Grid p={25} templateRows="repeat(2, 1fr)" templateColumns="repeat(5, 1fr)" gap={4}>
+          <GridItem rowSpan={2} colSpan={1}>
+            <Card h={"100%"}>
               <Heading color={color} fontSize={"2xl"} fontFamily={"body"}>
                 Game Settings
               </Heading>
@@ -108,8 +110,8 @@ const Lobby = ({ game }) => {
               </Box>
             </Card>
           </GridItem>
-          <GridItem>
-            <Card>
+          <GridItem colSpan={4} rowSpan={1}>
+            <Card h={"100%"} w={"100%"}>
               <Heading color={color} fontSize={"2xl"} fontFamily={"body"}>
                 Players
               </Heading>
@@ -119,26 +121,33 @@ const Lobby = ({ game }) => {
               </Suspense>
             </Card>
           </GridItem>
-        </SimpleGrid>
-        <Card>
-          <Heading color={color} fontSize={"2xl"} fontFamily={"body"}>
-            Invite your friends!
-          </Heading>
-          <SimpleGrid mt={10} mb={10}>
-            <GridItem>
-              <Tooltip>
-                <Input textAlign={"center"} value={value} isReadOnly placeholder="Invite Link" />
-              </Tooltip>
-            </GridItem>
-            <GridItem>
-              <Center>
-                <Button w={"50%"} mt={5} onClick={onCopy} ml={2}>
-                  {hasCopied ? "Copied" : "Copy"}
-                </Button>
-              </Center>
-            </GridItem>
-          </SimpleGrid>
-        </Card>
+          <GridItem colSpan={4}>
+            <Card>
+              <Heading color={color} fontSize={"2xl"} fontFamily={"body"}>
+                Invite your friends!
+              </Heading>
+              <SimpleGrid mt={10} mb={10}>
+                <GridItem>
+                  <Tooltip>
+                    <Input
+                      textAlign={"center"}
+                      value={value}
+                      isReadOnly
+                      placeholder="Invite Link"
+                    />
+                  </Tooltip>
+                </GridItem>
+                <GridItem>
+                  <Center>
+                    <Button w={"50%"} mt={5} onClick={onCopy} ml={2}>
+                      {hasCopied ? "Copied" : "Copy"}
+                    </Button>
+                  </Center>
+                </GridItem>
+              </SimpleGrid>
+            </Card>
+          </GridItem>
+        </Grid>
       </Box>
 
       <UnCloseableModal onClose={onClose} isOpen={isOpen}>

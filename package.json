@@ -41,6 +41,7 @@
     "animated-number-react": "0.1.2",
     "blitz": "0.38.5",
     "framer-motion": "3.2.0",
+    "fs": "0.0.1-security",
     "install": "0.13.0",
     "pusher": "5.0.0",
     "pusher-js": "7.0.3",

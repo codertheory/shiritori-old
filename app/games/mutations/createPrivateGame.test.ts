@@ -1,5 +1,5 @@
 import { Ctx, SessionContext } from "blitz"
-import createGame from "./createGame"
+import createGame from "./createPrivateGame"
 import db from "db"
 import { mockContextSession } from "../../../test/setup"
 

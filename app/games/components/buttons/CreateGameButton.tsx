@@ -12,13 +12,12 @@ export const CreateGameButton = ({ isPublic, children, ...props }: CreateGameBut
     setValue,
     formState: { isSubmitting },
   } = useFormContext()
-  const [privateValue] = useState<string>("")
 
   return (
     <Button
       type="submit"
       rounded={"full"}
-      isLoading={isSubmitting && privateValue === "true"}
+      isLoading={isSubmitting}
       loadingText="Submitting"
       onClick={() => {
         setValue("private", !isPublic)

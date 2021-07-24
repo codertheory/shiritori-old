@@ -3,7 +3,7 @@ import Layout from "app/core/layouts/Layout"
 import { CreateGameForm, FORM_ERROR } from "../games/components/forms/CreateGameForm"
 import { CreateGame } from "../games/validations"
 import Typed from "react-typed"
-import createGame from "../games/mutations/createGame"
+import createGame from "../games/mutations/createPrivateGame"
 import { LoadingSpinner } from "../core/components/LoadingSpinner"
 import { Suspense } from "react"
 import {
