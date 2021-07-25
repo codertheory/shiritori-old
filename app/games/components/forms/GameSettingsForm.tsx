@@ -18,7 +18,7 @@ export function GameSettingsForm<S extends z.ZodType<any, any>>(props: FormProps
         max={60}
         type="number"
         name="timer"
-        label="Amount of time per turn (in seconds)"
+        label="Turn Duration (in seconds)"
       />
     </Form>
   )

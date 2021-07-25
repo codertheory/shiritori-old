@@ -1,10 +1,18 @@
 import {
   Box,
+  Button,
   Collapse,
   Flex,
   Icon,
   IconButton,
   Link,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -16,9 +24,37 @@ import {
 } from "@chakra-ui/react"
 import { ChevronDownIcon, ChevronRightIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons"
 import { ThemeModeSwitch } from "../components/ThemeModeSwitch"
+import { getAntiCSRFToken, useRouter, useSession } from "blitz"
 
 export default function WithSubnavigation() {
-  const { isOpen, onToggle } = useDisclosure()
+  const { isOpen: navIsOpen, onToggle: navOnToggle } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const router = useRouter()
+  const antiCSRFToken = getAntiCSRFToken()
+  const session = useSession({
+    suspense: false,
+  })
+
+  const onHomeClick = async () => {
+    if (router.pathname === "/games/[gameId]") {
+      onOpen()
+    } else {
+      await router.replace("/")
+    }
+  }
+
+  const onLeaveClick = async () => {
+    const { gameId } = router.params
+    await window.fetch(`/api/games/${gameId}/${session.playerId}/leave`, {
+      credentials: "include",
+      headers: {
+        "anti-csrf": antiCSRFToken,
+      },
+    })
+    onClose()
+    await router.replace("/")
+  }
+
   return (
     <Box>
       <Flex
@@ -39,20 +75,22 @@ export default function WithSubnavigation() {
           display={{ base: "flex", md: "none" }}
         >
           <IconButton
-            onClick={onToggle}
-            icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
+            onClick={navOnToggle}
+            icon={navIsOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
             variant={"ghost"}
             aria-label={"Toggle Navigation"}
           />
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-          <Text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            fontFamily={"heading"}
-            color={useColorModeValue("gray.800", "white")}
-          >
-            Shiritori
-          </Text>
+          <Link onClick={onHomeClick}>
+            <Text
+              textAlign={useBreakpointValue({ base: "center", md: "left" })}
+              fontFamily={"heading"}
+              color={useColorModeValue("gray.800", "white")}
+            >
+              Shiritori
+            </Text>
+          </Link>
 
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
@@ -85,6 +123,26 @@ export default function WithSubnavigation() {
           <ThemeModeSwitch />
         </Stack>
       </Flex>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Leave Game</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            You are about the leave the game you are currently in, are you sure?
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button onClick={onLeaveClick} variant="ghost">
+              Leave
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   )
 }
