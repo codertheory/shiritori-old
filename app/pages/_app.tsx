@@ -42,7 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <meta property="og:title" content="Shiritori" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://codertheory.dev" />
+        <meta property="og:url" content="https://shiritoriwithfriends.com" />
         <meta
           property="og:image"
           content="https://image.spreadshirtmedia.com/image-server/v1/compositions/T813A2PA3132PT17X34Y52D1000021407FS6656/views/1,width=650,height=650,appearanceId=2,backgroundColor=ffffff.jpg"
