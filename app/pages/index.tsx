@@ -86,7 +86,7 @@ export const NewGame = () => {
             </Text>
           </Heading>
           <CreateGameForm schema={CreateGame} onSubmit={submitCreateGameForm} />
-          <Accordion>
+          <Accordion allowToggle>
             <AccordionItem>
               <h2>
                 <AccordionButton>
