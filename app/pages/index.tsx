@@ -7,22 +7,17 @@ import createGame from "../games/mutations/createPrivateGame"
 import { LoadingSpinner } from "../core/components/LoadingSpinner"
 import { Suspense } from "react"
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Box,
-  Button,
   Center,
   Container,
   Heading,
-  Icon,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Stack,
   Text,
-  useColorModeValue,
-  useDisclosure,
 } from "@chakra-ui/react"
 import { createIcon } from "@chakra-ui/icons"
 
@@ -40,8 +35,6 @@ const Arrow = createIcon({
 })
 
 export const NewGame = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const { isOpen: rulesIsOpen, onOpen: rulesOnOpen, onClose: rulesOnClose } = useDisclosure()
   const router = useRouter()
   const [createGameMutation] = useMutation(createGame)
 
@@ -92,79 +85,32 @@ export const NewGame = () => {
               With your Friends!
             </Text>
           </Heading>
-          <Stack
-            direction={"column"}
-            spacing={3}
-            align={"center"}
-            alignSelf={"center"}
-            position={"relative"}
-          >
-            <Button
-              colorScheme={"green"}
-              onClick={onOpen}
-              bg={"green.400"}
-              rounded={"full"}
-              px={6}
-              _hover={{
-                bg: "green.500",
-              }}
-            >
-              Get Started
-            </Button>
-            <Button onClick={rulesOnOpen} variant={"link"} colorScheme={"blue"} size={"sm"}>
-              Learn more
-            </Button>
-            <Box>
-              <Icon
-                as={Arrow}
-                color={useColorModeValue("gray.800", "gray.300")}
-                w={71}
-                position={"absolute"}
-                right={-71}
-                top={"10px"}
-              />
-              <Text
-                fontSize={"lg"}
-                fontFamily={"Caveat"}
-                position={"absolute"}
-                right={"-150px"}
-                top={"-22px"}
-                transform={"rotate(10deg)"}
-              >
-                Create a Private or Public Game!
-              </Text>
-            </Box>
-          </Stack>
+          <CreateGameForm schema={CreateGame} onSubmit={submitCreateGameForm} />
+          <Accordion>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box flex="1" textAlign={"center"}>
+                    Rules
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel>
+                Rules are simple. Each player starts with a 100 points. <br /> You have a timer to
+                enter a word that starts with the same letter as the last word used ends with. No
+                word can be used more than once per game.
+                <br />
+                <Center>
+                  <Text as={"span"} color={"green.600"}>
+                    Dangerous {"=>"} Super
+                  </Text>
+                </Center>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
         </Stack>
       </Container>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create a game</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <CreateGameForm schema={CreateGame} onSubmit={submitCreateGameForm} />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-      <Modal isOpen={rulesIsOpen} onClose={rulesOnClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Rules</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Rules are simple. Each player starts with a 100 points. <br /> You have a timer to enter
-            a word that starts with the same letter as the last word used ends with. No word can be
-            used more than once per game.
-            <br />
-            <Center>
-              <Text as={"span"} color={"green.600"}>
-                Dangerous {"=>"} Super
-              </Text>
-            </Center>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
     </>
   )
 }
