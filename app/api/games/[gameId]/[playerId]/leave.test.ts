@@ -11,7 +11,11 @@ const sessionData = {
 
 jest.mock("blitz", () => ({
   ...jest.requireActual<object>("blitz")!,
-  getSession: jest.fn(async (req, res) => sessionData),
+  getSession: jest.fn(async (req, res) => ({
+    gameId: "ABCD",
+    playerId: "EFGH",
+    playerName: "Mellow",
+  })),
 }))
 
 jest.mock("pusher")

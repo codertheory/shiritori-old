@@ -54,3 +54,4 @@ lib-cov
 .idea
 /junit.xml
 /cypress/videos/
+jest-coverage/
