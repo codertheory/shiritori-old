@@ -32,7 +32,7 @@ const PlayerScore = ({ score }: { score: number }) => {
         <Center>Score</Center>
       </StatLabel>
       <StatNumber>
-        <AnimatedNumber value={score} formatValue={formatValue} />
+        <AnimatedNumber value={score <= 0 ? 0 : score} formatValue={formatValue} />
       </StatNumber>
     </Stat>
   )
