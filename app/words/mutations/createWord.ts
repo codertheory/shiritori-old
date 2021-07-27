@@ -28,7 +28,7 @@ const CreateWord = z.object({
 })
 
 export default resolver.pipe(
-  resolver.zod(CreateWord),
+  (input) => CreateWord.parseAsync(input),
   async ({ word, totalElapsedTime, ...input }) => {
     return await db.word.create({
       data: {

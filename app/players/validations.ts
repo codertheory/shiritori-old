@@ -12,7 +12,6 @@ export const UpdatePlayer = z.object({
       .partial(),
   ]),
   lastWord: z.string().nonempty(),
-  active: z.boolean().default(false),
 })
 
 export const playerName = z.object({

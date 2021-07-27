@@ -69,7 +69,6 @@ export default resolver.pipe(
       {
         id: playerId,
         lastWord: newWord.word,
-        active: false,
         ...updatePlayerPayload,
       },
       ctx

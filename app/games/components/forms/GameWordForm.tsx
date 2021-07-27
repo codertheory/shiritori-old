@@ -1,12 +1,35 @@
 import { Form, FormProps } from "app/core/components/Form"
-import { LabeledTextField } from "app/core/components/fields/LabeledTextField"
 import { z } from "zod"
+import { Input } from "@chakra-ui/react"
+import { useController } from "react-hook-form"
 
 export { FORM_ERROR } from "app/core/components/Form"
 
 interface GameWordFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   isActivePlayer: boolean
   lastWord?: string | null
+}
+
+const GameWordInput = ({
+  isActivePlayer,
+  lastWord,
+  ...props
+}: {
+  isActivePlayer: boolean
+  lastWord?: string | null
+}) => {
+  const {
+    field,
+    formState: { isSubmitting },
+  } = useController({
+    name: "word",
+    rules: { required: true },
+    defaultValue: lastWord?.charAt(lastWord?.length - 1),
+  })
+
+  return (
+    <Input id={`field-name`} isDisabled={isSubmitting || !isActivePlayer} {...field} {...props} />
+  )
 }
 
 export function GameWordForm<S extends z.ZodType<any, any>>({
@@ -16,15 +39,7 @@ export function GameWordForm<S extends z.ZodType<any, any>>({
 }: GameWordFormProps<S>) {
   return (
     <Form<S> {...props}>
-      <LabeledTextField
-        hideErrors={props.hideErrors}
-        isDisabled={!isActivePlayer}
-        w={"full"}
-        type={"text"}
-        name={"word"}
-        label={""}
-        placeholder={"Enter a Word"}
-      />
+      <GameWordInput isActivePlayer={isActivePlayer} lastWord={lastWord} />
     </Form>
   )
 }
