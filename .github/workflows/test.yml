@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  test:
-    name: Test
+  jest:
+    name: Jest
     runs-on: ubuntu-latest
     env:
       NODE_ENV: test
@@ -47,7 +47,54 @@ jobs:
 
       - run: yarn lint
       - run: yarn blitz prisma migrate dev
-      - run: yarn test
+      - run: yarn test:jest
+
+      - uses: IgnusG/jest-report-action@v2.3.3
+        if: always() # Or use "continue-on-error: true" in previous test step
+        with:
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+  cypress:
+    name: Cypress
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:shiritori@localhost:5432/shiritori-test
+
+    services:
+      postgres:
+        image: postgres:12-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: shiritori
+          POSTGRES_DB: shiritori-test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - uses: actions/setup-node@v2.2.0
+        with:
+          node-version: "16"
+          cache: "yarn"
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - run: yarn install
+
+      - run: yarn lint
+      - run: yarn blitz prisma migrate dev
+      - run: yarn test:e2e
 
       - uses: IgnusG/jest-report-action@v2.3.3
         if: always() # Or use "continue-on-error: true" in previous test step

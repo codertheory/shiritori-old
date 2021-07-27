@@ -6,10 +6,12 @@ export { FORM_ERROR } from "app/core/components/Form"
 
 interface GameWordFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   isActivePlayer: boolean
+  lastWord?: string | null
 }
 
 export function GameWordForm<S extends z.ZodType<any, any>>({
   isActivePlayer,
+  lastWord,
   ...props
 }: GameWordFormProps<S>) {
   return (

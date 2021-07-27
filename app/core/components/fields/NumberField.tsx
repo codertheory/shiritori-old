@@ -1,5 +1,4 @@
 import {
-  FormControl,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -23,22 +22,20 @@ export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
     } = useFormContext()
 
     return (
-      <FormControl>
-        <NumberInput
-          clampValueOnBlur={false}
-          keepWithinRange
-          {...props}
-          onChange={async (valueAsString, valueAsNumber) => {
-            setValue(props.name, valueAsNumber)
-          }}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </FormControl>
+      <NumberInput
+        clampValueOnBlur={false}
+        keepWithinRange
+        {...props}
+        onChange={async (valueAsString, valueAsNumber) => {
+          setValue(props.name, valueAsNumber)
+        }}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
     )
   }
 )

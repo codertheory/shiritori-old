@@ -1,16 +1,5 @@
-import { useMutation, useParam, useQuery, useRouter } from "blitz"
-import {
-  Button,
-  Center,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Wrap,
-  WrapItem,
-} from "@chakra-ui/react"
+import { useParam, useQuery } from "blitz"
+import { Center, Wrap, WrapItem } from "@chakra-ui/react"
 import { Suspense, useEffect } from "react"
 import { PlayerGameCard } from "../../players/components/PlayerGameCard"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
@@ -18,8 +7,6 @@ import { useChannel, useEvent } from "@harelpls/use-pusher"
 import getWords from "../../words/queries/getWords"
 import { Game, Player, Word } from "db"
 import getGameWithPlayers from "../queries/getGameWithPlayers"
-import { UnCloseableModal } from "../../core/components/UnCloseableModal"
-import logoutMutation from "../../auth/mutations/logout"
 
 type GameWithPlayers = Game & {
   winner: Player | null
@@ -27,19 +14,12 @@ type GameWithPlayers = Game & {
 }
 
 const GameUI = ({ gameId }) => {
-  const router = useRouter()
-  const [logout] = useMutation(logoutMutation)
   const [game, { refetch }] = useQuery(getGameWithPlayers, { id: gameId })
   const channel = useChannel(gameId)
 
   useEvent(channel, "turn-taken", async (data) => {
     await refetch()
   })
-
-  const redirectToHome = async () => {
-    await logout()
-    await router.replace("/")
-  }
 
   useEffect(() => {}, [gameId])
   return (
@@ -48,20 +28,6 @@ const GameUI = ({ gameId }) => {
         <GamePlayerList game={game} />
       </Center>
       {/*<GameWordList gameId={gameId!} />*/}
-      <UnCloseableModal isOpen={game.finished} onClose={() => {}}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Game Finished</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>Congratulations {game.winner?.name}</ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost" onClick={redirectToHome}>
-              Go Home
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </UnCloseableModal>
     </>
   )
 }

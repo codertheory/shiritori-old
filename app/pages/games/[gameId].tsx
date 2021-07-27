@@ -1,5 +1,13 @@
 import { Suspense, useEffect } from "react"
-import { BlitzPage, getAntiCSRFToken, useParam, useQuery, useSession } from "blitz"
+import {
+  BlitzPage,
+  getAntiCSRFToken,
+  useMutation,
+  useParam,
+  useQuery,
+  useRouter,
+  useSession,
+} from "blitz"
 import Layout from "app/core/layouts/Layout"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import getGame from "../../games/queries/getGame"
@@ -10,8 +18,21 @@ import { JoinGameModal } from "../../games/components/JoinGameModal"
 import { useBeforeunload } from "react-beforeunload"
 import { useChannel, useEvent } from "@harelpls/use-pusher"
 import { useErrorToast } from "../../core/hooks/useErrorToast"
+import { UnCloseableModal } from "../../core/components/UnCloseableModal"
+import {
+  Button,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from "@chakra-ui/react"
+import logoutMutation from "../../auth/mutations/logout"
 
 export const GameManager = () => {
+  const router = useRouter()
+  const [logout] = useMutation(logoutMutation)
   const session = useSession()
   const gameId = useParam("gameId", "string")
   const channel = useChannel(gameId)
@@ -19,6 +40,11 @@ export const GameManager = () => {
 
   const [game, { refetch }] = useQuery(getGame, { id: gameId }, {})
   const antiCSRFToken = getAntiCSRFToken()
+
+  const redirectToHome = async () => {
+    await logout()
+    await router.replace("/")
+  }
 
   const refreshGame = async () => {
     try {
@@ -31,6 +57,11 @@ export const GameManager = () => {
   useEvent(channel, "game-started", async (data) => {
     await refreshGame()
     game.started = true
+  })
+
+  useEvent(channel, "game-finished", async (data) => {
+    await refreshGame()
+    game.finished = true
   })
 
   useEvent(channel, "player-created", async (data) => {
@@ -52,25 +83,30 @@ export const GameManager = () => {
 
   useEffect(() => {}, [game.started, game.finished])
 
-  if (session.gameId) {
-    if (game.started && !game.finished) {
-      return <GameLoader />
-    } else if (!game.started && !game.finished) {
-      return <Lobby game={game} />
-    } else {
-      return <></>
-    }
-  } else {
-    if (!game.started && !game.finished) {
-      return (
-        <>
-          <JoinGameModal />
-        </>
-      )
-    } else {
-      return <></>
-    }
-  }
+  return (
+    <>
+      {game.started && <GameLoader />}
+
+      {!game.started && <Lobby game={game} />}
+
+      {!game.started && !game.finished && session.playerId === undefined && <JoinGameModal />}
+
+      <UnCloseableModal isOpen={game.finished} onClose={() => {}}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Game Finished</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>Congratulations {game.winner?.name}</ModalBody>
+
+          <ModalFooter>
+            <Button variant="ghost" onClick={redirectToHome}>
+              Go Home
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </UnCloseableModal>
+    </>
+  )
 }
 
 const ShowGamePage: BlitzPage = () => {

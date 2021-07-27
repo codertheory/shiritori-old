@@ -12,6 +12,7 @@ export default resolver.pipe(resolver.zod(GetGame), async ({ id }) => {
           players: true,
         },
       },
+      winner: true,
     },
   })
 

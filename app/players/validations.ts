@@ -2,8 +2,15 @@ import { z } from "zod"
 
 export const UpdatePlayer = z.object({
   id: z.string(),
-  name: z.string(),
-  score: z.number().optional(),
+  score: z.union([
+    z.number().optional(),
+    z
+      .object({
+        decrement: z.number(),
+        increment: z.number(),
+      })
+      .partial(),
+  ]),
   lastWord: z.string().nonempty(),
   active: z.boolean().default(false),
 })
