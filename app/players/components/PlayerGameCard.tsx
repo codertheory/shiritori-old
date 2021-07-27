@@ -17,9 +17,9 @@ import { FORM_ERROR, GameWordForm } from "../../games/components/forms/GameWordF
 import { TakeTurn } from "../../games/validations"
 import { useTrigger } from "@harelpls/use-pusher"
 import { useMutation, useSession } from "blitz"
-import createWordMutation from "../../words/mutations/createWord"
 import AnimatedNumber from "animated-number-react"
 import { CountdownCircleTimerProps } from "react-countdown-circle-timer"
+import takeTurnMutation from "../../games/mutations/takeTurn"
 
 const PlayerScore = ({ score }: { score: number }) => {
   const formatValue = (value: number) => value.toFixed(2)
@@ -32,7 +32,7 @@ const PlayerScore = ({ score }: { score: number }) => {
         <Center>Score</Center>
       </StatLabel>
       <StatNumber>
-        <AnimatedNumber value={score} formatValue={formatValue} />
+        <AnimatedNumber value={score <= 0 ? 0 : score} formatValue={formatValue} />
       </StatNumber>
     </Stat>
   )
@@ -44,21 +44,26 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
   const isActive = game.index === player.order
   const isCurrentPlayer = isPlayer && isActive
   const trigger = useTrigger(game.id!)
-  const [cw] = useMutation(createWordMutation)
+  const [takeTurn] = useMutation(takeTurnMutation)
   useEffect(() => {}, [player])
 
-  const createWord = (word) => {
-    return cw({
+  const commitTakeTurn = async (word: string, totalElapsedTime?: number) => {
+    const data = await takeTurn({
       playerId: player.id,
       gameId: game.id,
       word,
+      totalElapsedTime,
     })
+    if (data.score <= 0) {
+      await trigger("game-finished", {})
+    } else {
+      await trigger("turn-taken", { word: word || "" })
+    }
   }
 
   const submitGameWordForm = async (values) => {
     try {
-      const word = await createWord(values.word)
-      await trigger("turn-taken", { word })
+      await commitTakeTurn(values.word)
     } catch (error) {
       return {
         [FORM_ERROR]: error.toString(),
@@ -68,9 +73,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
 
   const onTimerComplete: CountdownCircleTimerProps["onComplete"] = (totalElapsedTime) => {
     if (isCurrentPlayer) {
-      createWord("").then((r) => {
-        trigger("turn-taken", {}).then()
-      })
+      commitTakeTurn("").then()
     }
     return [true, 5]
   }
@@ -108,7 +111,7 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
           <Heading>
             <PlayerScore score={player.score} />
           </Heading>
-          <Heading pt={5} mb={-5} fontSize={"1xl"} fontWeight={200} fontFamily={"subtitle"}>
+          <Heading pt={5} mb={-5} fontSize={"1xl"} fontWeight={200}>
             {player.lastWord}
           </Heading>
         </Stack>
@@ -116,6 +119,8 @@ export const PlayerGameCard = ({ player, game }: { player: Player; game: Game })
       <Divider />
       <Box p={5}>
         <GameWordForm
+          key={game.lastWord}
+          lastWord={game.lastWord}
           isActivePlayer={isCurrentPlayer}
           schema={TakeTurn}
           initialValues={{ word: game.lastWord || "" }}

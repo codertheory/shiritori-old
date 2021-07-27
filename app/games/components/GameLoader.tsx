@@ -32,14 +32,19 @@ const GameUI = ({ gameId }) => {
   const [game, { refetch }] = useQuery(getGameWithPlayers, { id: gameId })
   const channel = useChannel(gameId)
 
-  useEvent(channel, "turn-taken", async (data) => {
-    await refetch()
-  })
-
   const redirectToHome = async () => {
     await logout()
     await router.replace("/")
   }
+
+  useEvent(channel, "turn-taken", async (data) => {
+    await refetch()
+  })
+
+  useEvent(channel, "game-finished", async (data) => {
+    await refetch()
+    game.finished = true
+  })
 
   useEffect(() => {}, [gameId])
   return (
@@ -47,7 +52,7 @@ const GameUI = ({ gameId }) => {
       <Center>
         <GamePlayerList game={game} />
       </Center>
-      {/*<GameWordList gameId={gameId!} />*/}
+
       <UnCloseableModal isOpen={game.finished} onClose={() => {}}>
         <ModalOverlay />
         <ModalContent>
@@ -62,6 +67,7 @@ const GameUI = ({ gameId }) => {
           </ModalFooter>
         </ModalContent>
       </UnCloseableModal>
+      {/*<GameWordList gameId={gameId!} />*/}
     </>
   )
 }

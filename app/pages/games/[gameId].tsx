@@ -33,6 +33,11 @@ export const GameManager = () => {
     game.started = true
   })
 
+  useEvent(channel, "game-finished", async (data) => {
+    await refreshGame()
+    game.finished = true
+  })
+
   useEvent(channel, "player-created", async (data) => {
     await refreshGame()
   })
@@ -52,25 +57,15 @@ export const GameManager = () => {
 
   useEffect(() => {}, [game.started, game.finished])
 
-  if (session.gameId) {
-    if (game.started && !game.finished) {
-      return <GameLoader />
-    } else if (!game.started && !game.finished) {
-      return <Lobby game={game} />
-    } else {
-      return <></>
-    }
-  } else {
-    if (!game.started && !game.finished) {
-      return (
-        <>
-          <JoinGameModal />
-        </>
-      )
-    } else {
-      return <></>
-    }
-  }
+  return (
+    <>
+      {game.started && session.playerId !== undefined && <GameLoader />}
+
+      {!game.started && session.playerId !== undefined && <Lobby game={game} />}
+
+      {!game.started && !game.finished && session.playerId === undefined && <JoinGameModal />}
+    </>
+  )
 }
 
 const ShowGamePage: BlitzPage = () => {

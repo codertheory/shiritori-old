@@ -17,7 +17,8 @@ export const UpdateGameSettings = z.object({
   timer: z
     .number()
     .min(minTimer, "Timer must be greater than 10")
-    .max(maxTimer, "Timer must be less than 60"),
+    .max(maxTimer, "Timer must be less than 60")
+    .optional(),
 })
 
 export const UpdateGame = UpdateGameSettings.extend({
