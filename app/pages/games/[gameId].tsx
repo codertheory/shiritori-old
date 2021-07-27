@@ -1,13 +1,5 @@
 import { Suspense, useEffect } from "react"
-import {
-  BlitzPage,
-  getAntiCSRFToken,
-  useMutation,
-  useParam,
-  useQuery,
-  useRouter,
-  useSession,
-} from "blitz"
+import { BlitzPage, getAntiCSRFToken, useParam, useQuery, useSession } from "blitz"
 import Layout from "app/core/layouts/Layout"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import getGame from "../../games/queries/getGame"
@@ -18,21 +10,8 @@ import { JoinGameModal } from "../../games/components/JoinGameModal"
 import { useBeforeunload } from "react-beforeunload"
 import { useChannel, useEvent } from "@harelpls/use-pusher"
 import { useErrorToast } from "../../core/hooks/useErrorToast"
-import { UnCloseableModal } from "../../core/components/UnCloseableModal"
-import {
-  Button,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react"
-import logoutMutation from "../../auth/mutations/logout"
 
 export const GameManager = () => {
-  const router = useRouter()
-  const [logout] = useMutation(logoutMutation)
   const session = useSession()
   const gameId = useParam("gameId", "string")
   const channel = useChannel(gameId)
@@ -40,11 +19,6 @@ export const GameManager = () => {
 
   const [game, { refetch }] = useQuery(getGame, { id: gameId }, {})
   const antiCSRFToken = getAntiCSRFToken()
-
-  const redirectToHome = async () => {
-    await logout()
-    await router.replace("/")
-  }
 
   const refreshGame = async () => {
     try {
@@ -85,26 +59,11 @@ export const GameManager = () => {
 
   return (
     <>
-      {game.started && <GameLoader />}
+      {game.started && session.playerId !== undefined && <GameLoader />}
 
-      {!game.started && <Lobby game={game} />}
+      {!game.started && session.playerId !== undefined && <Lobby game={game} />}
 
       {!game.started && !game.finished && session.playerId === undefined && <JoinGameModal />}
-
-      <UnCloseableModal isOpen={game.finished} onClose={() => {}}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Game Finished</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>Congratulations {game.winner?.name}</ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost" onClick={redirectToHome}>
-              Go Home
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </UnCloseableModal>
     </>
   )
 }
