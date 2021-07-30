@@ -53,15 +53,16 @@
     "react-icons": "^4.2.0",
     "react-spinners": "^0.11.0",
     "react-typed": "1.2.0",
+    "rollbar": "2.24.0",
     "typo-js-ts": "^2.0.4",
     "zod": "3.5.1"
   },
   "devDependencies": {
     "@cypress/react": "5.9.1",
+    "@testing-library/user-event": "^13.2.1",
     "@types/preview-email": "2.0.1",
     "@types/react": "17.0.14",
     "@types/react-beforeunload": "2.1.1",
-    "@testing-library/user-event": "^13.2.1",
     "cross-env": "7.0.3",
     "cypress": "8.0.0",
     "eslint": "7.30.0",

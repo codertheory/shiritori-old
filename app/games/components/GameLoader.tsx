@@ -42,8 +42,8 @@ const GameUI = ({ gameId }) => {
   })
 
   useEvent(channel, "game-finished", async (data) => {
-    await refetch()
     game.finished = true
+    await refetch()
   })
 
   useEffect(() => {}, [gameId])

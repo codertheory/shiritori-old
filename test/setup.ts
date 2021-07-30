@@ -22,6 +22,10 @@ const mockContextSession: SessionContext = {
 
 export { mockContextSession }
 
+beforeEach(async () => {
+  await db.$reset()
+})
+
 afterAll(async () => {
   await db.$disconnect()
 })

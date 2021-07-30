@@ -4,8 +4,9 @@ import getGameWithPlayers from "../queries/getGameWithPlayers"
 import updateGame from "./updateGame"
 import updatePlayer from "../../players/mutations/updatePlayer"
 import createWord from "../../words/mutations/createWord"
+import { UpdateGame } from "../validations"
 
-const TakeTurn = z.object({
+export const TakeTurn = z.object({
   playerId: z.string(),
   gameId: z.string(),
   word: z.string(),
@@ -35,16 +36,17 @@ export default resolver.pipe(
     const starting = game!.index === game!.players!.length ? game!.index : game!.index + 1
     const nextIndex = starting % game!.players!.length
     const nextPlayer = game!.players[nextIndex]
+    const updateGamePayload: z.infer<typeof UpdateGame> = {
+      id: gameId,
+      index: nextPlayer!.order,
+    }
+    if (word && word.length > 0) {
+      updateGamePayload.lastWord = word
+    }
 
-    await updateGame(
-      {
-        id: gameId,
-        lastWord: word,
-        index: nextPlayer!.order,
-      },
-      ctx
-    )
+    await updateGame(updateGamePayload, ctx)
     let updatePlayerPayload: {
+      lastWord?: string
       score: {
         decrement?: number
         increment?: number
@@ -53,6 +55,7 @@ export default resolver.pipe(
 
     if (word) {
       updatePlayerPayload = {
+        lastWord: newWord.word,
         score: {
           decrement: newWord.points,
         },
@@ -68,7 +71,6 @@ export default resolver.pipe(
     return await updatePlayer(
       {
         id: playerId,
-        lastWord: newWord.word,
         ...updatePlayerPayload,
       },
       ctx
