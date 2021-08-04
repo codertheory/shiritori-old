@@ -21,6 +21,9 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@v2
 
+      - name: Install NPM dependencies 📦
+        uses: bahmutov/npm-install@v1
+
       - name: Install and run Cypress tests 🌲
         uses: cypress-io/github-action@v2
         with:
