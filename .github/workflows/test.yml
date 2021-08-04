@@ -24,7 +24,7 @@ jobs:
       - name: Install and run Cypress tests 🌲
         uses: cypress-io/github-action@v2
         with:
-          start: yarn dev
+          start: blitz start -p 3000
           wait-on: "http://localhost:3000"
 
   unit:
