@@ -27,8 +27,7 @@ jobs:
       - name: Install and run Cypress tests 🌲
         uses: cypress-io/github-action@v2
         with:
-          start: blitz start -p 3000
-          wait-on: "http://localhost:3000"
+          command: yarn run test:e2e
 
   unit:
     runs-on: ubuntu-20.04
