@@ -91,7 +91,9 @@ export const NewGame = () => {
               <h2>
                 <AccordionButton>
                   <Box flex="1" textAlign={"center"}>
-                    Rules
+                    <Heading as={"h3"} fontWeight={500} lineHeight={"110%"}>
+                      Rules
+                    </Heading>
                   </Box>
                   <AccordionIcon />
                 </AccordionButton>

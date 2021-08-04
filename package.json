@@ -12,8 +12,9 @@
     "cy:run": "cypress run",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "test": "prisma generate && blitz codegen && yarn test:jest && yarn test:e2e",
-    "test:server": "cross-env NODE_ENV=test blitz prisma migrate deploy && blitz build && cross-env NODE_ENV=test blitz start -p 3099",
-    "test:e2e": "cross-env NODE_ENV=test start-server-and-test test:server http://localhost:3099 cy:run",
+    "migrate": "prisma migrate dev",
+    "test:server": "cross-env NODE_ENV=test CYPRESS_BASE_URL=http://localhost:3099 blitz prisma migrate deploy && blitz build && cross-env NODE_ENV=test blitz start -p 3099",
+    "test:e2e": "cross-env NODE_ENV=test CYPRESS_BASE_URL=http://localhost:3099 start-server-and-test test:server http://localhost:3099 cy:run",
     "test:jest": "jest --ci --reporters=default --reporters=jest-junit",
     "test:watch": "jest --watch",
     "prepare": "husky install"

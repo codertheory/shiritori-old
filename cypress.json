@@ -1,10 +1,11 @@
 {
-  "baseUrl": "http://localhost:3099",
+  "baseUrl": "http://localhost:3000",
   "testFiles": "**/*.e2e.test.{js,ts,jsx,tsx}",
   "defaultCommandTimeout": 10000,
   "retries": {
     "runMode": 1
   },
   "video": false,
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "experimentalStudio": true
 }

@@ -13,7 +13,7 @@ services:
   db-test:
     image: postgres:latest
     env_file:
-      - ./.env.test.local
+      - .env.test.local
       - ./.env
     ports:
       - 5433:5432
