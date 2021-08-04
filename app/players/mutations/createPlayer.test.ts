@@ -22,5 +22,7 @@ describe("Create Player Mutation Tests", () => {
         } as Ctx
       )
     ).resolves.not.toThrow()
+
+    expect(mockContextSession.$setPublicData).toBeCalled()
   })
 })
