@@ -66,6 +66,7 @@
     "@types/react-beforeunload": "2.1.1",
     "cross-env": "7.0.3",
     "cypress": "8.2.0",
+    "cypress-intellij-reporter": "^0.0.6",
     "eslint": "7.30.0",
     "husky": "6.0.0",
     "jest-junit": "12.2.0",

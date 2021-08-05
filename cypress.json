@@ -1,7 +1,7 @@
 {
   "baseUrl": "http://localhost:3000",
-  "testFiles": "**/*.e2e.test.{js,ts,jsx,tsx}",
-  "defaultCommandTimeout": 10000,
+  "testFiles": "**/*.spec.{js,ts,jsx,tsx}",
+  "defaultCommandTimeout": 5000,
   "retries": {
     "runMode": 1
   },
