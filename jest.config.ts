@@ -5,7 +5,7 @@ import type { Config } from "@jest/types"
 const config: Config.InitialOptions = {
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: true,
-  collectCoverageFrom: ["app/**/*.{ts,tsx}"],
+  collectCoverageFrom: ["app/**/*.{ts,tsx}", "!app/**/*.test.{ts,tsx}"],
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(test).[jt]s?(x)"],
   // The directory where Jest should output its coverage files
   coverageDirectory: "jest-coverage",
