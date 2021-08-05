@@ -67,8 +67,7 @@ jobs:
       - name: Run Jest tests 🧪
         run: yarn test:jest
 
-      - name: Generate Coverage Report
-        uses: IgnusG/jest-report-action@v2.3.3
-        if: always() # Or use "continue-on-error: true" in previous test step
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
         with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}

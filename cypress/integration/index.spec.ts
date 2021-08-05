@@ -13,7 +13,7 @@ describe("index page", () => {
     cy.get("#create-private-game-btn").as("createPrivateGameBtn").should("exist")
     cy.get("@usernameInput").should("have.value", "")
 
-    // TODO Figure out why Cypress bugs out when trying to type into a value that exists
+    // TODO Figure out why Cypress bugs out when trying to type into a field that exists on the DOM
     cy.get("@usernameInput").type("Mellow").should("have.value", "Mellow")
     cy.get("@createPrivateGameBtn").click()
     cy.location("pathname").should("contain", "/games/")
