@@ -3,8 +3,13 @@
 This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 [![CI](https://github.com/codertheory/shiritori/actions/workflows/test.yml/badge.svg)](https://github.com/codertheory/shiritori/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/codertheory/shiritori/branch/main/graph/badge.svg?token=RNI7HPZPT2)](https://codecov.io/gh/codertheory/shiritori)
 
-# **shiritori**
+# **Shiritori**
+
+Test Your Vocabulary with your friends!
+
+---
 
 ## Getting Started
 

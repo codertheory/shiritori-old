@@ -12,8 +12,9 @@ const config: Config.InitialOptions = {
   // The test environment that will be used for testing
   testEnvironment: "jsdom",
   preset: "blitz",
-  reporters: ["default", "jest-junit"],
+  reporters: ["default", "jest", "jest-junit"],
   testResultsProcessor: "jest-junit",
+  watchPlugins: ["jest-watch-typeahead/filename", "jest-watch-typeahead/testname"],
 }
 
 export default config

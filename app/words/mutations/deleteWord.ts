@@ -7,8 +7,5 @@ const DeleteWord = z.object({
 })
 
 export default resolver.pipe(resolver.zod(DeleteWord), resolver.authorize(), async ({ id }) => {
-  // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const word = await db.word.deleteMany({ where: { id } })
-
-  return word
+  return await db.word.deleteMany({ where: { id } })
 })
