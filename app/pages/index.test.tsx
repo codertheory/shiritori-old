@@ -2,10 +2,10 @@ import { render } from "test/utils"
 
 import Home from "./index"
 
-describe("Create Game Page Tests", () => {
-  it("Renders Form successfully", async () => {
-    const { getByText } = render(<Home />)
-    const text = getByText("With your Friends!")
-    expect(text).toBeInTheDocument()
+describe("HomePage Tests", () => {
+  it("Renders successfully", async () => {
+    const { getByText, getByPlaceholderText } = render(<Home />)
+    expect(getByText("With your Friends!")).toBeInTheDocument()
+    expect(getByPlaceholderText("Some Wacky Username")).toBeInTheDocument()
   })
 })

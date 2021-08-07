@@ -22,7 +22,7 @@ export const JoinGameModal = () => {
           <JoinGameForm
             initialValues={{ gameId }}
             schema={CreatePlayer}
-            submitText="Join Game"
+            submitText="Join"
             onSubmit={async (values) => {
               try {
                 const player = await createPlayerMutation({

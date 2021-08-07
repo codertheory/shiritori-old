@@ -3,7 +3,7 @@ describe("index page", () => {
     cy.intercept("GET", "/").as("index")
   })
 
-  it("Enters in a Username and has no errors", () => {
+  it.skip("Enters in a Username and has no errors", () => {
     cy.visit("/")
     cy.wait("@index")
 

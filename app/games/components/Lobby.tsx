@@ -3,7 +3,6 @@ import {
   Button,
   Center,
   Divider,
-  Flex,
   Grid,
   GridItem,
   Heading,
@@ -128,7 +127,7 @@ const Lobby = ({ game }) => {
               </Heading>
               <SimpleGrid mt={10} mb={10}>
                 <GridItem>
-                  <Tooltip>
+                  <Tooltip label={"Invite Link"}>
                     <Input
                       textAlign={"center"}
                       value={value}

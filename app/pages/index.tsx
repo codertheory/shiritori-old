@@ -60,7 +60,7 @@ export const NewGame = () => {
             Test Your <br />
             <Text as={"span"} color={"green.600"}>
               <Typed
-                strings={["Words", "Speed", "Dexterity", "Yaw"]}
+                strings={["Words", "Speed", "Vocabulary"]}
                 loop
                 typeSpeed={75}
                 backSpeed={120}

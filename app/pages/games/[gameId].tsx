@@ -11,13 +11,12 @@ import { useBeforeunload } from "react-beforeunload"
 import { useChannel, useEvent } from "@harelpls/use-pusher"
 import { useErrorToast } from "../../core/hooks/useErrorToast"
 
-export const GameManager = () => {
+export const GameManager = ({ gameId }: { gameId?: string }) => {
   const session = useSession()
-  const gameId = useParam("gameId", "string")
   const channel = useChannel(gameId)
   const errorToast = useErrorToast()
 
-  const [game, { refetch }] = useQuery(getGame, { id: gameId }, {})
+  const [game, { refetch }] = useQuery(getGame, { id: gameId })
   const antiCSRFToken = getAntiCSRFToken()
 
   const refreshGame = async () => {
@@ -69,10 +68,11 @@ export const GameManager = () => {
 }
 
 const ShowGamePage: BlitzPage = () => {
+  const gameId = useParam("gameId", "string")
   return (
     <div>
       <Suspense fallback={<LoadingSpinner />}>
-        <GameManager />
+        <GameManager gameId={gameId} />
       </Suspense>
     </div>
   )
