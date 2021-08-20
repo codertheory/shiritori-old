@@ -1,28 +1,33 @@
-import { render } from "test/utils"
+import { render, screen } from "test/utils"
 import { GameSettingsForm } from "./GameSettingsForm"
-import userEvent from "@testing-library/user-event"
-import { act } from "react-dom/test-utils"
+import { fireEvent, waitFor } from "@testing-library/dom"
 
 describe("Game Settings Form Tests", () => {
   it("Submits Successfully", async () => {
     const onSubmit = jest.fn()
-    const { getByRole, getByText } = render(
-      <GameSettingsForm submitText="Start Game" onSubmit={onSubmit} />
-    )
-    const timerInput = document.getElementById("field-timer") as HTMLInputElement
+    render(<GameSettingsForm submitText="Start Game" onSubmit={onSubmit} />)
+    const timerInput = screen.getByRole("spinbutton") as HTMLInputElement
     expect(timerInput).toBeInTheDocument()
     expect(timerInput.value).toEqual("15")
 
-    await act(() => {
-      userEvent.type(timerInput, "25")
+    fireEvent.change(timerInput, {
+      target: {
+        value: 25,
+      },
     })
 
-    // expect(timerInput.value).toEqual("25")
+    await waitFor(() => {
+      expect(timerInput.value).toEqual("25")
+    })
 
-    // const form = getByRole("form")
-    //
-    // expect(form).toBeInTheDocument()
-    //
-    // expect(onSubmit).toBeCalledWith({ timer: 15 })
+    const startGameBtn = screen.getByText("Start Game")
+
+    expect(startGameBtn).toBeInTheDocument()
+
+    fireEvent.submit(startGameBtn)
+
+    await waitFor(() => {
+      expect(onSubmit).toBeCalledWith({ timer: 25 })
+    })
   })
 })

@@ -4,6 +4,7 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 [![CI](https://github.com/codertheory/shiritori/actions/workflows/test.yml/badge.svg)](https://github.com/codertheory/shiritori/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/codertheory/shiritori/branch/main/graph/badge.svg?token=RNI7HPZPT2)](https://codecov.io/gh/codertheory/shiritori)
+[![CodeFactor](https://www.codefactor.io/repository/github/codertheory/shiritori/badge)](https://www.codefactor.io/repository/github/codertheory/shiritori)
 
 # **Shiritori**
 
