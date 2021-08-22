@@ -13,6 +13,7 @@ const config: Config.InitialOptions = {
   preset: "blitz",
   reporters: ["default", "jest-junit"],
   testResultsProcessor: "jest-junit",
+  watchPlugins: ["jest-watch-typeahead/filename", "jest-watch-typeahead/testname"],
 }
 
 export default config
