@@ -1,10 +1,11 @@
-import { Wrap, WrapItem } from "@chakra-ui/react"
+import { Box, Center, Divider, Heading, useColorModeValue } from "@chakra-ui/react"
 import PlayerLobbyCard from "../../players/components/PlayerLobbyCard"
 import { useQuery } from "blitz"
 import getGamePlayers from "../queries/getGamePlayers"
 import { useChannel, useEvent } from "@harelpls/use-pusher"
 
-export const LobbyPlayerList = ({ gameId }: { gameId: string }) => {
+export const LobbyPlayerListCard = ({ gameId }: { gameId: string }) => {
+  const color = useColorModeValue("gray.700", "white")
   const channel = useChannel(gameId)
   const [players, { refetch }] = useQuery(getGamePlayers, { id: gameId })
 
@@ -17,14 +18,16 @@ export const LobbyPlayerList = ({ gameId }: { gameId: string }) => {
   })
 
   return (
-    <Wrap spacing="30px">
+    <Box>
+      <Center>
+        <Heading color={color} fontSize={"2xl"} alignContent={"center"} fontFamily={"body"}>
+          players - {players.length}
+        </Heading>
+      </Center>
+      <Divider />
       {players.map((player) => {
-        return (
-          <WrapItem key={player.id}>
-            <PlayerLobbyCard player={player} />
-          </WrapItem>
-        )
+        return <PlayerLobbyCard key={player.id} player={player} />
       })}
-    </Wrap>
+    </Box>
   )
 }

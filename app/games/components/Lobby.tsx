@@ -2,45 +2,43 @@ import {
   Box,
   Button,
   Center,
-  Divider,
-  Flex,
   Grid,
   GridItem,
-  Heading,
-  Input,
   ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
-  Tooltip,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   useClipboard,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react"
 import { Card } from "../../core/components/Card"
-import { LobbyPlayerList } from "./LobbyPlayerList"
+import { LobbyPlayerListCard } from "./LobbyPlayerListCard"
 import { useMutation, useParam, useSession } from "blitz"
 import { CountDown } from "./CountDown"
 import { FORM_ERROR, GameSettingsForm } from "./forms/GameSettingsForm"
 import updateGame from "../mutations/updateGame"
-import { UpdateGameSettings } from "../validations"
 import { Suspense, useState } from "react"
 import { useChannel, useEvent, useTrigger } from "@harelpls/use-pusher"
 import { UnCloseableModal } from "../../core/components/UnCloseableModal"
 import { LoadingSpinner } from "../../core/components/LoadingSpinner"
 import { Role } from "../../../types"
 import { useErrorToast } from "../../core/hooks/useErrorToast"
+import { UpdateGameSettings } from "../validations"
 
 const Lobby = ({ game }) => {
   const gameId = useParam("gameId", "string")
   const [gameSettings, setGameSettings] = useState<any>(undefined)
   const channel = useChannel(gameId)
   const trigger = useTrigger(gameId!)
-  const color = useColorModeValue("gray.700", "white")
   const [updateGameMutation] = useMutation(updateGame)
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const { value, hasCopied, onCopy } = useClipboard(window.location.href)
+  const { onCopy } = useClipboard(window.location.href)
   const session = useSession()
   const isHost = (session.role as Role) === "HOST"
   const errorToast = useErrorToast()
@@ -54,7 +52,6 @@ const Lobby = ({ game }) => {
       await updateGameMutation({ id: gameId!, started: true, ...gameSettings })
       await trigger("game-started", {})
     } catch (error) {
-      console.error(error)
       errorToast({ message: error.toString() })
     }
   }
@@ -89,65 +86,50 @@ const Lobby = ({ game }) => {
 
   return (
     <>
-      <Box p={25}>
-        <Grid p={25} templateRows="repeat(2, 1fr)" templateColumns="repeat(5, 1fr)" gap={4}>
-          <GridItem rowSpan={2} colSpan={1}>
-            <Card h={"100%"}>
-              <Heading color={color} fontSize={"2xl"} fontFamily={"body"}>
-                Game Settings
-              </Heading>
-              <Divider />
-              <Box pt={15}>
-                <GameSettingsForm
-                  schema={UpdateGameSettings}
-                  submitText="Start Game"
-                  submitButtonProps={{
-                    disabled: !isHost,
-                  }}
-                  initialValues={{ timer: 15 }}
-                  onSubmit={submitSettingsForm}
-                />
-              </Box>
-            </Card>
-          </GridItem>
-          <GridItem colSpan={4} rowSpan={1}>
-            <Card h={"100%"} w={"100%"}>
-              <Heading color={color} fontSize={"2xl"} fontFamily={"body"}>
-                Players
-              </Heading>
-              <Divider />
+      <Box p={100} h={"75%"}>
+        <Card h={800}>
+          <Grid h={"100%"} templateRows="repeat(2, 1fr)" templateColumns="repeat(5, 1fr)" gap={4}>
+            <GridItem rowSpan={2} colSpan={1}>
               <Suspense fallback={<LoadingSpinner />}>
-                <LobbyPlayerList gameId={gameId!} />
+                <Card height={"100%"} bg={useColorModeValue("white", "gray.900")}>
+                  <LobbyPlayerListCard gameId={gameId!} />
+                </Card>
               </Suspense>
-            </Card>
-          </GridItem>
-          <GridItem colSpan={4}>
-            <Card>
-              <Heading color={color} fontSize={"2xl"} fontFamily={"body"}>
-                Invite your friends!
-              </Heading>
-              <SimpleGrid mt={10} mb={10}>
-                <GridItem>
-                  <Tooltip>
-                    <Input
-                      textAlign={"center"}
-                      value={value}
-                      isReadOnly
-                      placeholder="Invite Link"
+            </GridItem>
+            <GridItem rowSpan={2} colSpan={4}>
+              <Tabs
+                bg={useColorModeValue("white", "gray.900")}
+                size={"lg"}
+                height={"90%"}
+                isFitted
+                variant="enclosed-colored"
+              >
+                <TabList>
+                  <Tab>Variants</Tab>
+                  <Tab>Settings</Tab>
+                </TabList>
+                <TabPanels>
+                  <TabPanel>Presets</TabPanel>
+                  <TabPanel>
+                    <GameSettingsForm
+                      schema={UpdateGameSettings}
+                      initialValues={{ timer: 15 }}
+                      onSubmit={submitSettingsForm}
                     />
-                  </Tooltip>
-                </GridItem>
-                <GridItem>
-                  <Center>
-                    <Button w={"50%"} mt={5} onClick={onCopy} ml={2}>
-                      {hasCopied ? "Copied" : "Copy"}
-                    </Button>
-                  </Center>
-                </GridItem>
-              </SimpleGrid>
-            </Card>
-          </GridItem>
-        </Grid>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+              <Center>
+                <Button w={"200px"} mt={5} onClick={onCopy} ml={2}>
+                  Invite
+                </Button>
+                <Button disabled={!isHost} w={"200px"} mt={5} ml={2}>
+                  Start
+                </Button>
+              </Center>
+            </GridItem>
+          </Grid>
+        </Card>
       </Box>
 
       <UnCloseableModal onClose={onClose} isOpen={isOpen}>

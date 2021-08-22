@@ -46,7 +46,6 @@ export const NewGame = () => {
       })
       await router.replace(Routes.ShowGamePage({ gameId: data.id }))
     } catch (error) {
-      console.error(error)
       return {
         [FORM_ERROR]: error.toString(),
       }

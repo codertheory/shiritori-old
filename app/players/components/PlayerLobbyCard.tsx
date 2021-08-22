@@ -1,26 +1,27 @@
-import { Box, Center, Flex, Heading, Stack, useColorModeValue } from "@chakra-ui/react"
+import { Box, Center, Grid, GridItem, Heading, useColorModeValue } from "@chakra-ui/react"
 import { Player } from "db"
 
 export default function PlayerLobbyCard({ player }: { player: Player }) {
   return (
-    <Flex>
-      <Center py={6}>
-        <Box
-          w={"full"}
-          bg={useColorModeValue("white", "gray.800")}
-          boxShadow={"2xl"}
-          rounded={"md"}
-          overflow={"hidden"}
-        >
-          <Box p={6}>
-            <Stack spacing={0} align={"center"}>
-              <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
+    <Center py={6}>
+      <Box
+        w={"full"}
+        bg={useColorModeValue("white", "gray.800")}
+        boxShadow={"2xl"}
+        rounded={"md"}
+        overflow={"hidden"}
+      >
+        <Grid templateColumns="repeat(5, 1fr)" gap={4}>
+          <GridItem colSpan={1} h="10" bg="tomato" />
+          <Center>
+            <GridItem>
+              <Heading as="h6" size="xs">
                 {player.name}
               </Heading>
-            </Stack>
-          </Box>
-        </Box>
-      </Center>
-    </Flex>
+            </GridItem>
+          </Center>
+        </Grid>
+      </Box>
+    </Center>
   )
 }
