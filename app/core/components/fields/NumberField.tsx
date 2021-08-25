@@ -6,14 +6,14 @@ import {
   NumberInputProps,
   NumberInputStepper,
 } from "@chakra-ui/react"
-import React, { useEffect } from "react"
+import { forwardRef, useEffect } from "react"
 import { useFormContext, UseFormRegisterReturn } from "react-hook-form"
 
 export interface NumberFieldProps
   extends UseFormRegisterReturn,
     Omit<NumberInputProps, "name" | "onBlur" | "onChange"> {}
 
-export const NumberField = React.forwardRef<HTMLInputElement, NumberFieldProps>(
+export const NumberField = forwardRef<HTMLInputElement, NumberFieldProps>(
   ({ onChange, ...props }, ref) => {
     useEffect(() => {}, [props.name])
     const {

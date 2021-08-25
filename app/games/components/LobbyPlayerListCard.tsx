@@ -1,4 +1,4 @@
-import { Box, Center, Divider, Heading, useColorModeValue } from "@chakra-ui/react"
+import { Center, Divider, Heading, useColorModeValue } from "@chakra-ui/react"
 import PlayerLobbyCard from "../../players/components/PlayerLobbyCard"
 import { useQuery } from "blitz"
 import getGamePlayers from "../queries/getGamePlayers"
@@ -18,7 +18,7 @@ export const LobbyPlayerListCard = ({ gameId }: { gameId: string }) => {
   })
 
   return (
-    <Box>
+    <>
       <Center>
         <Heading color={color} fontSize={"2xl"} alignContent={"center"} fontFamily={"body"}>
           players - {players.length}
@@ -28,6 +28,6 @@ export const LobbyPlayerListCard = ({ gameId }: { gameId: string }) => {
       {players.map((player) => {
         return <PlayerLobbyCard key={player.id} player={player} />
       })}
-    </Box>
+    </>
   )
 }

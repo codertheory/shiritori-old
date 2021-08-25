@@ -1,7 +1,11 @@
 import { Ctx } from "blitz"
-import { Game } from "db"
+import { Game, GameVariant } from "db"
+import { z } from "zod"
 
 export const alphabet = "abcdefghijklmnopqrstuvwxyz"
+export const generateRandomLetter = () => {
+  return alphabet[Math.floor(Math.random() * alphabet.length)]
+}
 
 type gameWithPlayers = Game & {
   players: {
@@ -19,3 +23,5 @@ export const setSessionPublicData = async (game: gameWithPlayers, ctx: Ctx) => {
   })
   return game
 }
+
+export const GameVariantsEnum = z.nativeEnum(GameVariant)

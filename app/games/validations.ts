@@ -1,5 +1,7 @@
 import { z } from "zod"
 import { playerName } from "../players/validations"
+import { GameVariantsEnum } from "./consts"
+import { GameVariant } from "db"
 
 export const GetGame = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -19,6 +21,7 @@ export const UpdateGameSettings = z.object({
     .min(minTimer, "Timer must be greater than 10")
     .max(maxTimer, "Timer must be less than 60")
     .optional(),
+  variant: GameVariantsEnum.default(GameVariant.Default).optional(),
 })
 
 export const UpdateGame = UpdateGameSettings.extend({

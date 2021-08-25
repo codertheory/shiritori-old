@@ -8,11 +8,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   useClipboard,
   useColorModeValue,
   useDisclosure,
@@ -21,7 +16,7 @@ import { Card } from "../../core/components/Card"
 import { LobbyPlayerListCard } from "./LobbyPlayerListCard"
 import { useMutation, useParam, useSession } from "blitz"
 import { CountDown } from "./CountDown"
-import { FORM_ERROR, GameSettingsForm } from "./forms/GameSettingsForm"
+import { GameSettingsForm } from "./forms/GameSettingsForm"
 import updateGame from "../mutations/updateGame"
 import { Suspense, useState } from "react"
 import { useChannel, useEvent, useTrigger } from "@harelpls/use-pusher"
@@ -57,23 +52,24 @@ const Lobby = ({ game }) => {
   }
 
   const submitSettingsForm = async (values) => {
-    if (isHost) {
-      try {
-        if (game!._count!.players > 1) {
-          setGameSettings(values)
-          await trigger("game-countdown-started", { id: gameId })
-        } else {
-          errorToast({ message: "Cannot start a game with less than 2 players" })
-          return {
-            [FORM_ERROR]: "",
-          }
-        }
-      } catch (error) {
-        return {
-          [FORM_ERROR]: error.toString(),
-        }
-      }
-    }
+    console.log(values)
+    // if (isHost) {
+    //   try {
+    //     if (game!._count!.players > 1) {
+    //       setGameSettings(values)
+    //       await trigger("game-countdown-started", { id: gameId })
+    //     } else {
+    //       errorToast({ message: "Cannot start a game with less than 2 players" })
+    //       return {
+    //         [FORM_ERROR]: ""
+    //       }
+    //     }
+    //   } catch (error) {
+    //     return {
+    //       [FORM_ERROR]: error.toString()
+    //     }
+    //   }
+    // }
   }
 
   const onCountDownFinish = (totalElapsedTime: number) => {
@@ -90,40 +86,42 @@ const Lobby = ({ game }) => {
         <Card h={800}>
           <Grid h={"100%"} templateRows="repeat(2, 1fr)" templateColumns="repeat(5, 1fr)" gap={4}>
             <GridItem rowSpan={2} colSpan={1}>
-              <Suspense fallback={<LoadingSpinner />}>
-                <Card height={"100%"} bg={useColorModeValue("white", "gray.900")}>
+              <Card
+                px={3}
+                width={"100%"}
+                height={"100%"}
+                bg={useColorModeValue("white", "gray.900")}
+              >
+                <Suspense
+                  fallback={
+                    <Center>
+                      <LoadingSpinner />
+                    </Center>
+                  }
+                >
                   <LobbyPlayerListCard gameId={gameId!} />
-                </Card>
-              </Suspense>
+                </Suspense>
+              </Card>
             </GridItem>
             <GridItem rowSpan={2} colSpan={4}>
-              <Tabs
-                bg={useColorModeValue("white", "gray.900")}
-                size={"lg"}
-                height={"90%"}
-                isFitted
-                variant="enclosed-colored"
-              >
-                <TabList>
-                  <Tab>Variants</Tab>
-                  <Tab>Settings</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>Presets</TabPanel>
-                  <TabPanel>
-                    <GameSettingsForm
-                      schema={UpdateGameSettings}
-                      initialValues={{ timer: 15 }}
-                      onSubmit={submitSettingsForm}
-                    />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
+              <GameSettingsForm
+                id={"game-settings-form"}
+                schema={UpdateGameSettings}
+                initialValues={{ timer: 15 }}
+                onSubmit={submitSettingsForm}
+              />
               <Center>
                 <Button w={"200px"} mt={5} onClick={onCopy} ml={2}>
                   Invite
                 </Button>
-                <Button disabled={!isHost} w={"200px"} mt={5} ml={2}>
+                <Button
+                  type={"submit"}
+                  form={"game-settings-form"}
+                  disabled={!isHost}
+                  w={"200px"}
+                  mt={5}
+                  ml={2}
+                >
                   Start
                 </Button>
               </Center>

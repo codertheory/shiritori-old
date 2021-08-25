@@ -16,7 +16,7 @@ services:
       - ./.env.test.local
       - ./.env
     ports:
-      - 5433:5432
+      - "5433:5432"
 
   redis:
     image: redis:latest

@@ -1,7 +1,7 @@
-import { Ctx, resolver } from "blitz"
+import { resolver } from "blitz"
 import db from "db"
 import { CreateGame } from "../validations"
-import { alphabet, setSessionPublicData } from "../consts"
+import { generateRandomLetter, setSessionPublicData } from "../consts"
 
 export default resolver.pipe(
   resolver.zod(CreateGame),
@@ -15,7 +15,7 @@ export default resolver.pipe(
             },
           ],
         },
-        lastWord: alphabet[Math.floor(Math.random() * alphabet.length)],
+        lastWord: generateRandomLetter(),
         ...input,
       },
       include: {

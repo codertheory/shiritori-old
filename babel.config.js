@@ -1,4 +1,4 @@
 module.exports = {
   presets: ["blitz/babel"],
-  plugins: [],
+  plugins: [["module-resolver", { root: ["."] }], "inline-react-svg"],
 }
