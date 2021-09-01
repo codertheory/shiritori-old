@@ -1,4 +1,3 @@
-[![Blitz.js](https://raw.githubusercontent.com/blitz-js/art/master/github-cover-photo.png)](https://blitzjs.com)
 
 This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
@@ -8,7 +7,9 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 # **Shiritori**
 
-Test Your Vocabulary with your friends!
+Test your vocabulary against your friends.
+
+The rules are simple: Use the last letter of the last word used.
 
 ---
 
